@@ -16,6 +16,13 @@ pref("general.autoScroll", false);
 pref("general.autoScroll", true);
 #endif
 
+// this will automatically enable inline spellchecking (if it is available) for
+// editable elements in HTML
+// 0 = spellcheck nothing
+// 1 = check multi-line controls [default]
+// 2 = check multi/single line controls
+pref("layout.spellcheckDefault", 1);
+
 // What to do when starting up
 //  0 = do not connect / show the account manager
 //  1 = connect automatically
@@ -61,12 +68,15 @@ pref("messenger.options.filterMode", 2);
 
 pref("font.default.x-western", "sans-serif");
 pref("font.default.x-unicode", "sans-serif");
+pref("font.default.x-central-euro", "sans-serif");
 #ifdef XP_MACOSX
 pref("font.name.sans-serif.x-unicode", "Lucida Grande");
 pref("font.name.sans-serif.x-western", "Lucida Grande");
+pref("font.name.sans-serif.x-central-euro", "Lucida Grande");
 #endif
 pref("font.size.variable.x-western", 13);
 pref("font.size.variable.x-unicode", 13);
+pref("font.size.variable.x-central-euro", 13);
 
 // use "none" to disable
 pref("messenger.options.emoticonsTheme", "default");

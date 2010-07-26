@@ -53,7 +53,7 @@
         <xul:hbox anonid="details" align="center" flex="1">
           <xul:deck anonid="notificationdeck" selectedIndex="0" flex="1">
             <xul:hbox flex="1" align="center" ondblclick="editTopic();">
-              <xul:image anonid="messageImage" 
+              <xul:image anonid="messageImage"
                          class="messageImage"
                          xbl:inherits="src=image"/>
               <xul:description anonid="messageText"
@@ -67,7 +67,7 @@
               <xul:image anonid="messageImage"
                          class="messageImage"
                          xbl:inherits="src=image"/>
-              <xul:textbox anonid="newtopictextbox" flex="1" spellcheck="true"/>
+              <xul:textbox anonid="newtopictextbox" flex="1"/>
               <xul:button label="&topicBar.button.label;" oncommand="setTopic();"
                           accesskey="&topicBar.button.accesskey;"/>
             </xul:hbox>
@@ -81,15 +81,21 @@
       </xul:hbox>
     </content>
     <implementation>
+      <property name="deck"
+                onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'notificationdeck');"/>
+      <property name="textbox"
+                onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'newtopictextbox');"/>
+
       <method name="editTopic">
         <body>
           <![CDATA[
-            document.getAnonymousElementByAttribute(this, "anonid", "notificationdeck")
-                    .selectedIndex = 1;
-            let textboxElt =
-              document.getAnonymousElementByAttribute(this, "anonid", "newtopictextbox");
+            this.deck.selectedIndex = 1;
+            let textboxElt = this.textbox;
             textboxElt.value = this.label;
             textboxElt.focus();
+            if (!("TextboxSpellChecker" in window))
+              Components.utils.import("resource://app/modules/imTextboxUtils.jsm");
+            TextboxSpellChecker.registerTextbox(textboxElt);
           ]]>
         </body>
       </method>
@@ -97,9 +103,7 @@
       <method name="setTopic">
         <body>
           <![CDATA[
-            var changeCmdString = "/topic " +
-              document.getAnonymousElementByAttribute(this, "anonid", "newtopictextbox")
-                      .value;
+            var changeCmdString = "/topic " + this.textbox.value;
             document.getBindingParent(this).sendMsg(changeCmdString);
             this.stopEdit();
           ]]>
@@ -109,21 +113,20 @@
       <method name="stopEdit">
         <body>
           <![CDATA[
-            document.getAnonymousElementByAttribute (this, "anonid", "notificationdeck")
-                    .selectedIndex = 0;
+            this.deck.selectedIndex = 0;
             document.getBindingParent(this).focus();
+            TextboxSpellChecker.unregisterTextbox(this.textbox);
           ]]>
         </body>
       </method>
 
       <method name="closeBar">
         <body>
-          <![CDATA[ 
+          <![CDATA[
             // Actions on the close button:
             //  if in edit mode, change back to the topic display
             //  otherwise close the bar as usual
-            if (document.getAnonymousElementByAttribute(this, "anonid", "notificationdeck")
-                        .selectedIndex == 1)
+            if (this.deck.selectedIndex == 1)
               this.stopEdit();
             else
               this.close();
