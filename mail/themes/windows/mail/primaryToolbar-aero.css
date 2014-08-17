@@ -35,6 +35,14 @@
   }
 }
 
+@media (-moz-os-version: windows-win8) {
+  @media not all and (-moz-windows-default-theme) {
+    #mail-toolbar-menubar2:not([autohide="true"]) {
+      -moz-binding: url("chrome://global/content/bindings/toolbar.xml#toolbar-drag");
+    }
+  }
+}
+
 #messengerWindow[tabsintitlebar] #mail-menubar > menu:not(:-moz-lwtheme) {
   color: CaptionText;
 }
