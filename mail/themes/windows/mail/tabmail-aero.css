@@ -64,6 +64,11 @@
   color: CaptionText;
 }
 
+#messengerWindow[tabsintitlebar]
+.tabmail-tab:not([selected]):not(:-moz-lwtheme):-moz-window-inactive {
+  color: InactiveCaptionText;
+}
+
 @media (-moz-os-version: windows-win8) {
   @media not all and (-moz-windows-default-theme) {
     #tabs-toolbar:not(:-moz-lwtheme) {
