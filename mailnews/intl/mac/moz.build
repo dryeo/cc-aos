@@ -13,5 +13,7 @@ UNIFIED_SOURCES += [
 
 FINAL_LIBRARY = 'mail'
 LOCAL_INCLUDES += [
+    '/mozilla/intl/icu/source/common',
+    '/mozilla/intl/icu/source/i18n',
     '/mozilla/intl/locale/src',
 ]
