@@ -4,19 +4,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-if CONFIG['MOZ_WIDGET_TOOLKIT'] == 'cocoa':
-    DIRS += ['mac']
-
 UNIFIED_SOURCES += [
-    'nsMUTF7ToUnicode.cpp',
-    'nsUnicodeToMUTF7.cpp',
-    'nsUnicodeToUTF7.cpp',
-    'nsUTF7ToUnicode.cpp',
+    'nsCollationMacUC.cpp',
 ]
 
-MSVC_ENABLE_PGO = True
-
 FINAL_LIBRARY = 'mail'
-
-# Tests need more attention before they can be enabled.
-TEST_DIRS += ['test']
+LOCAL_INCLUDES += [
+    '/mozilla/intl/locale/src',
+]
