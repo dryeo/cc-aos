@@ -42,3 +42,4 @@ MAR_CHANNEL_ID=thunderbird-comm-release
 if test "$OS_TARGET" = "WINNT" -o "$OS_TARGET" = "Darwin"; then
   MOZ_FOLD_LIBS=1
 fi
+MOZ_PROFILE_MIGRATOR=1
