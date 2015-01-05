@@ -6,9 +6,6 @@
 
 UNIFIED_SOURCES += [
     'nsCollationMacUC.cpp',
-    'nsCollationRegistrar.cpp',
-    'nsCollationRegistrarModule.cpp',
-    'nsFixedCollationMacUCFactory.cpp',
 ]
 
 FINAL_LIBRARY = 'mail'

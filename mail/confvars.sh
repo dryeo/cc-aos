@@ -23,11 +23,6 @@ MOZ_SAFE_BROWSING=1
 MOZ_MEDIA_NAVIGATOR=1
 MOZ_MORK=1
 MAIL_MODULE="MODULE(nsMailModule) MODULE(nsImportServiceModule)"
-if test "$OS_ARCH" = "Darwin"; then
-  COLLATION_MODULE="MODULE(nsCollationRegistrar)"
-else
-  COLLATION_MODULE=
-fi
 
 MOZ_APP_VERSION_TXT=${_topsrcdir}/$MOZ_BUILD_APP/config/version.txt
 MOZ_APP_VERSION=`cat $MOZ_APP_VERSION_TXT`
