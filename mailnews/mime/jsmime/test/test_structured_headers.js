@@ -94,7 +94,8 @@ suite('Structured headers', function () {
   let addressing_headers = ['From', 'To', 'Cc', 'Bcc', 'Sender', 'Reply-To',
     'Resent-Bcc', 'Resent-To', 'Resent-From', 'Resent-Cc', 'Resent-Sender',
     'Approved', 'Disposition-Notification-To', 'Delivered-To',
-    'Return-Receipt-To'];
+    'Return-Receipt-To', 'Resent-Reply-To', 'Mail-Reply-To', 'Mail-Followup-To'
+  ];
   let address_tests = [
     ["", []],
     ["a@example.invalid", [{name: "", email: "a@example.invalid"}]],
@@ -135,6 +136,18 @@ suite('Structured headers', function () {
   ];
   date_headers.forEach(function (header) {
     testHeader(header, date_tests);
+  });
+
+  let multiple_unstructured_headers = ['In-Reply-To', 'References'];
+  let multiple_unstructured_tests = [
+    ["<asdasdasd@asdasdasd.com>", "<asdasdasd@asdasdasd.com>"],
+    ["<asd@asd.com> <asdf@asdf.com>", "<asd@asd.com> <asdf@asdf.com>"],
+
+    // This test is needed for clients sending non-compliant headers, see bug 1154521
+    ["<asd@asd.com>,<asdf@asdf.com>,<asdfg@asdfg.com>", "<asd@asd.com> <asdf@asdf.com> <asdfg@asdfg.com>"],
+  ];
+  multiple_unstructured_headers.forEach(function (header) {
+    testHeader(header, multiple_unstructured_tests);
   });
 
   let unstructured_headers = ['Comments', 'Content-Description', 'Keywords',
