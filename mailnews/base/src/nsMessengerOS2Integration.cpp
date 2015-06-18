@@ -55,7 +55,7 @@ nsMessengerOS2Integration::~nsMessengerOS2Integration()
   }
 }
 
-NS_IMPL_ISUPPORTS2(nsMessengerOS2Integration, nsIMessengerOSIntegration, nsIFolderListener)
+NS_IMPL_ISUPPORTS(nsMessengerOS2Integration, nsIMessengerOSIntegration, nsIFolderListener)
 
 nsresult
 nsMessengerOS2Integration::Init()
