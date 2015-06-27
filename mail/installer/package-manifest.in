@@ -169,8 +169,27 @@
 ; [OS/2]
 #ifdef XP_OS2
 @BINPATH@/MozSounds.cmd
-@BINPATH@/*.xqs
-@BINPATH@/components/*.xqs
+@BINPATH@/freebl3.xqs
+@BINPATH@/js.xqs
+@BINPATH@/mozalloc.xqs
+#ifndef MOZ_STATIC_JS
+@BINPATH@/mozjs.xqs
+#endif
+@BINPATH@/mozsqlt3.xqs
+@BINPATH@/nspr4.xqs
+@BINPATH@/nss3.xqs
+@BINPATH@/nssckbi.xqs
+@BINPATH@/nssdbm3.xqs
+@BINPATH@/nssutil3.xqs
+@BINPATH@/plc4.xqs
+@BINPATH@/plds4.xqs
+@BINPATH@/plugin-container.xqs
+@BINPATH@/smime3.xqs
+@BINPATH@/softokn3.xqs
+@BINPATH@/ssl3.xqs
+@BINPATH@/updater.xqs
+@BINPATH@/xpcshell.xqs
+@BINPATH@/xul.xqs
 #endif
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
