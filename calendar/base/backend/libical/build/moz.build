@@ -13,3 +13,5 @@ IS_COMPONENT = True
 
 LIBRARY_NAME = 'calbasecomps'
 
+SHORT_LIBNAME = 'calbscmp'
+

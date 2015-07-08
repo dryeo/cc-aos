@@ -115,6 +115,12 @@ RCFLAGS += -DMOZ_THUNDERBIRD --include-dir $(srcdir)
 endif
 endif
 
+ifeq ($(OS_ARCH),OS2)
+RESFILE=splashos2.res
+RCFLAGS += -DMOZ_THUNDERBIRD
+RCFLAGS += -DTHUNDERBIRD_ICO=\"$(DIST)/branding/thunderbird.ico\"
+endif
+
 include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
@@ -140,16 +146,16 @@ endif
 endif
 endif
 
-ifneq ($(OS_ARCH),WINNT)
+ifneq (,$(filter-out OS2 WINNT,$(OS_ARCH)))
 libs::
 	cp -p $(MOZ_APP_NAME)$(BIN_SUFFIX) $(DIST)/bin/$(MOZ_APP_NAME)-bin$(BIN_SUFFIX)
 
 GARBAGE += $(addprefix $(DIST)/bin/defaults/pref/, all.js all-thunderbird.js channel-prefs.js mailnews.js)
-endif # ! WinNT
+endif # ! OS 2 or WinNT
 
 endif # LIBXUL_SDK
 
-ifneq (,$(filter windows,$(MOZ_WIDGET_TOOLKIT)))
+ifneq (,$(filter windows os2,$(MOZ_WIDGET_TOOLKIT)))
 ICON_SUFFIX=.ico
 
 DESKTOP_ICONS = \
