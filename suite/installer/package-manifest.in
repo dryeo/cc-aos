@@ -746,6 +746,7 @@ bin/libfreebl_32int64_3.so
 #ifdef XP_OS2
 @BINPATH@/MozSounds.cmd
 @BINPATH@/mozalloc.xqs
+@BINPATH@/README.OS2
 #ifndef MOZ_STATIC_JS
 @BINPATH@/mozjs.xqs
 #endif
