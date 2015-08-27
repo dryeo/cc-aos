@@ -294,7 +294,7 @@ let cal = {
      * @return {string}        the string with prefix
      */
     prependMailTo: function(aId) {
-        return (!aId.search(/^MAILTO:/i) && aId.includes("@")) ? "MAILTO:" + aId : aId;
+        return (aId.search(/^mailto:/i) == -1 && aId.contains("@")) ? "mailto:" + aId : aId;
     },
 
     /**
