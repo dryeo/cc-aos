@@ -1040,7 +1040,7 @@ nsMsgMaildirStore::CopyMessages(bool aIsMove, nsIArray *aHdrArray,
     srcHdr->GetMessageKey(&srcKey);
     msgTxn->AddSrcKey(srcKey);
     nsAutoCString fileName;
-    msgHdr->GetStringProperty("storeToken", getter_Copies(fileName));
+    srcHdr->GetStringProperty("storeToken", getter_Copies(fileName));
     if (fileName.IsEmpty())
     {
       PR_LOG(MailDirLog, PR_LOG_ALWAYS,
