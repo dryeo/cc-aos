@@ -78,9 +78,7 @@
 #tabs-toolbar[brighttext] #extractTaskButton,
 #tabs-toolbar[brighttext] #extractEventButton,
 #mail-toolbox > toolbar[brighttext] #extractTaskButton,
-#mail-toolbox > toolbar[brighttext] #extractEventButton,
-#header-view-toolbox > toolbar[brighttext] #hdrExtractTaskButton,
-#header-view-toolbox > toolbar[brighttext] #hdrExtractEventButton {
+#mail-toolbox > toolbar[brighttext] #extractEventButton {
   list-style-image: url(chrome://calendar/skin/toolbar-aero-inverted.png) !important;
 }
 

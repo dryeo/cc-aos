@@ -208,6 +208,11 @@ nsThunderbirdProfileMigrator::FillProfileDataFromRegistry()
   
   thunderbirdData->Append(NS_LITERAL_STRING(".thunderbird"));
 
+#elif defined(XP_OS2)
+  fileLocator->Get(NS_OS2_HOME_DIR, NS_GET_IID(nsIFile),
+                   getter_AddRefs(thunderbirdData));
+  
+  thunderbirdData->Append(NS_LITERAL_STRING("Thunderbird"));
 #else
   // On other OS just abort
   return NS_ERROR_FILE_NOT_FOUND;

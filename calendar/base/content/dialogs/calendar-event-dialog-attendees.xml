@@ -973,7 +973,7 @@
           }
 
           let arrowLength = 1;
-          if (element.value.contains(",") || element.value.match(/^[^"].*[<>@,].*[^"] <.+@.+>$/)) {
+          if (element.value.contains(",")) {
               let strippedAddresses = element.value.replace(/.* >> /, "");
               let addresses = MailServices.headerParser.makeFromDisplayAddress(strippedAddresses);
               element.value = parseHeaderValue(addresses[0]);
