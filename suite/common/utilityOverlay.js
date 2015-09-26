@@ -979,10 +979,10 @@ function openAsExternal(aURL)
  *
  * @param aURL
  *        The URL to open (as a string).
- * @param aNode
- *        The node from which the URL came, or null. This is used to set
+ * @param aDocument
+ *        The document from which the URL came, or null. This is used to set
  *        the referrer header and to do a security check of whether the
- *        node is allowed to reference the URL. If null, there will be no
+ *        document is allowed to reference the URL. If null, there will be no
  *        referrer header and no security check.
  * @param aPostData
  *        Form POST data, or null.
@@ -996,26 +996,26 @@ function openAsExternal(aURL)
  *        services (e.g., Google's I Feel Lucky) for interpretation. This
  *        parameter may be undefined in which case it is treated as false.
  * @param [optional] aReferrer
- *        If aNode is null, then this will be used as the referrer.
+ *        If aDocument is null, then this will be used as the referrer.
  *        There will be no security check.
  */
-function openNewPrivateWith(aURL, aNode, aPostData, aAllowThirdPartyFixup,
+function openNewPrivateWith(aURL, aDoc, aPostData, aAllowThirdPartyFixup,
                             aReferrer)
 {
-  return openNewTabWindowOrExistingWith(kNewPrivate, aURL, aNode, false,
+  return openNewTabWindowOrExistingWith(kNewPrivate, aURL, aDoc, false,
                                         aPostData, aAllowThirdPartyFixup,
                                         aReferrer);
 }
 
-function openNewWindowWith(aURL, aNode, aPostData, aAllowThirdPartyFixup,
+function openNewWindowWith(aURL, aDoc, aPostData, aAllowThirdPartyFixup,
                            aReferrer)
 {
-  return openNewTabWindowOrExistingWith(kNewWindow, aURL, aNode, false,
+  return openNewTabWindowOrExistingWith(kNewWindow, aURL, aDoc, false,
                                         aPostData, aAllowThirdPartyFixup,
                                         aReferrer);
 }
 
-function openNewTabWith(aURL, aNode, aPostData, aEvent,
+function openNewTabWith(aURL, aDoc, aPostData, aEvent,
                         aAllowThirdPartyFixup, aReferrer)
 {
   var loadInBackground = Services.prefs.getBoolPref("browser.tabs.loadInBackground");
@@ -1032,27 +1032,22 @@ function openNewTabWith(aURL, aNode, aPostData, aEvent,
   {
     loadInBackground = !loadInBackground;
   }
-  return openNewTabWindowOrExistingWith(kNewTab, aURL, aNode, loadInBackground,
+  return openNewTabWindowOrExistingWith(kNewTab, aURL, aDoc, loadInBackground,
                                         aPostData, aAllowThirdPartyFixup,
                                         aReferrer);
 }
 
-function openNewTabWindowOrExistingWith(aType, aURL, aNode, aLoadInBackground,
+function openNewTabWindowOrExistingWith(aType, aURL, aDoc, aLoadInBackground,
                                         aPostData, aAllowThirdPartyFixup,
                                         aReferrer)
 {
   // Make sure we are allowed to open this url
-  if (aNode)
-    urlSecurityCheck(aURL, aNode.nodePrincipal,
+  if (aDoc)
+    urlSecurityCheck(aURL, aDoc.nodePrincipal,
                      Components.interfaces.nsIScriptSecurityManager.STANDARD);
 
   // get referrer, if as external should be null
-  var referrerURI = aReferrer;
-  if (aNode instanceof Document)
-    referrerURI = aNode.documentURIObject;
-  else if (aNode instanceof Element &&
-           !/(?:^|\s)noreferrer(?:\s|$)/i.test(aNode.getAttribute("rel")))
-    referrerURI = aNode.ownerDocument.documentURIObject;
+  var referrerURI = aDoc ? aDoc.documentURIObject : aReferrer;
 
   var browserWin;
   // if we're not opening a new window, try and find existing window
@@ -1097,8 +1092,7 @@ function openNewTabWindowOrExistingWith(aType, aURL, aNode, aLoadInBackground,
               charset: originCharset,
               postData: aPostData,
               inBackground: aLoadInBackground,
-              allowThirdPartyFixup: aAllowThirdPartyFixup,
-              relatedToCurrent: !!aNode
+              allowThirdPartyFixup: aAllowThirdPartyFixup
             });
   if (!aLoadInBackground)
     browserWin.content.focus();
@@ -1124,16 +1118,7 @@ function BrowserOnCommand(event)
   // Exception" or "Get Me Out Of Here" button
   if (docURI.startsWith("about:certerror?")) {
     if (buttonID == "exceptionDialogButton") {
-      const Ci = Components.interfaces;
-      let docshell = ownerDoc.defaultView
-                             .QueryInterface(Ci.nsIInterfaceRequestor)
-                             .getInterface(Ci.nsIWebNavigation)
-                             .QueryInterface(Ci.nsIDocShell);
-      let securityInfo = docshell.failedChannel.securityInfo;
-      let sslStatus = securityInfo.QueryInterface(Ci.nsISSLStatusProvider)
-                                  .SSLStatus;
-
-      let params = { exceptionAdded : false, sslStatus : sslStatus };
+      var params = { exceptionAdded : false };
 
       switch (GetIntPref("browser.ssl_override_behavior", 2)) {
         case 2 : // Pre-fetch & pre-populate.
@@ -1266,7 +1251,7 @@ function createShowPopupsMenu(parent, browser)
     if (!URI)
       continue;
 
-    var str = gUtilityBundle.getFormattedString("popupMenuShow", [URI.spec]);
+    var str = gUtilityBundle.getFormattedString("popupMenuShow", [URI]);
     // Check for duplicates and reuse the old menuitem.
     var menuitem = parent.getElementsByAttribute("label", str).item(0);
     if (!menuitem) {
@@ -1511,12 +1496,6 @@ function openUILinkIn(url, where, aAllowThirdPartyFixup, aPostData, aReferrerURI
 
   if (where == "save") {
     saveURL(url, null, null, true, true, aReferrerURI, aInitiatingDoc);
-    return null;
-  }
-
-  if (where == "private") {
-    window.openDialog(getBrowserURL(), "_blank", "private,chrome,all,dialog=no",
-                      url, null, null, aPostData, aAllowThirdPartyFixup, aIsUTF8);
     return null;
   }
 
