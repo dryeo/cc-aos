@@ -8,7 +8,9 @@ Components.utils.import("resource://gre/modules/DownloadUtils.jsm");
 
 function Startup()
 {
-  updateActualCacheSize();
+  Components.classes["@mozilla.org/netwerk/cache-storage-service;1"]
+            .getService(Components.interfaces.nsICacheStorageService)
+            .asyncGetDiskConsumption(CacheObserver);
 }
 
 // Needs to be global because the cache service only keeps a weak reference.
@@ -101,9 +103,3 @@ function ReadSmartSizeEnabled()
   return enabled;
 }
 
-function updateActualCacheSize()
-{
-  Components.classes["@mozilla.org/netwerk/cache-storage-service;1"]
-            .getService(Components.interfaces.nsICacheStorageService)
-            .asyncGetDiskConsumption(CacheObserver);
-}

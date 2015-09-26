@@ -60,18 +60,13 @@ EXTRA_JS_MODULES += [
     'mailServices.js',
     'msgDBCacheManager.js',
     'OAuth2.jsm',
-    'OAuth2Providers.jsm',
     'StringBundle.js',
     'templateUtils.js',
     'traceHelper.js',
 ]
 
-LOCAL_INCLUDES += [
-  '/mozilla/netwerk/base'
-]
-
 FINAL_LIBRARY = 'mail'
 
-Library('msgbsutl_s')
+LIBRARY_NAME = 'msgbsutl_s'
 
 DEFINES['_IMPL_NS_MSG_BASE'] = True

@@ -43,7 +43,7 @@
 #include "nsMsgBaseCID.h"
 
 
-#if defined(XP_WIN)
+#if defined(XP_WIN) || defined(XP_OS2)
 #include "nsEudoraWin32.h"
 #endif
 #ifdef XP_MACOSX
@@ -94,7 +94,7 @@ private:
   static void  ReportSuccess(nsString& name, int32_t count, nsString *pStream);
 
 private:
-#if defined(XP_WIN)
+#if defined(XP_WIN) || defined(XP_OS2)
   nsEudoraWin32  m_eudora;
 #endif
 #ifdef XP_MACOSX
@@ -149,7 +149,7 @@ private:
   static void  ReportSuccess(nsString& name, nsString *pStream);
 
 private:
-#if defined(XP_WIN)
+#if defined(XP_WIN) || defined(XP_OS2)
   nsEudoraWin32  m_eudora;
 #endif
 #ifdef XP_MACOSX
