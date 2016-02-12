@@ -35,6 +35,7 @@ pref("general.startup.addressbook",         false);
 
 pref("general.open_location.last_url",      "");
 pref("general.open_location.last_window_choice", 0);
+pref("browser.urlbar.historyEnabled",       true);
 
 pref("general.smoothScroll", false);
 pref("general.autoScroll", true);
@@ -102,6 +103,7 @@ pref("browser.search.log", false);
 // Ordering of Search Engines in the Engine list.
 pref("browser.search.order.1", "chrome://communicator-region/locale/region.properties");
 pref("browser.search.order.2", "chrome://communicator-region/locale/region.properties");
+pref("browser.search.order.3", "chrome://communicator-region/locale/region.properties");
 
 // Search (side)bar results always open in a new tab.
 pref("browser.search.openintab", false);
@@ -146,13 +148,13 @@ pref("browser.urlbar.showSearch", true);
 // 3: Match at the beginning of the url or title
 pref("browser.urlbar.matchBehavior", 1);
 
-// The default behavior for the urlbar can be configured to use any combination
-// of the restrict or match filters with each additional filter restricting
-// more (intersection). Add the following values to set the behavior as the
-// default: 1: history, 2: bookmark, 4: tag, 8: title, 16: url, 32: typed
-// E.g., 0 = show all results (no filtering), 1 = only visited pages in history,
-// 2 = only bookmarks, 3 = visited bookmarks, 1+16 = history matching in the url
-pref("browser.urlbar.default.behavior", 1);
+pref("browser.urlbar.suggest.history", true);
+pref("browser.urlbar.suggest.bookmark", false);
+// SeaMonkey doesn't support this.
+pref("browser.urlbar.suggest.openpage", false);
+
+pref("browser.urlbar.suggest.history.onlyTyped", false);
+
 pref("browser.urlbar.filter.javascript", true);
 
 // Size of "chunks" affects the number of places to process between each search
@@ -342,9 +344,13 @@ pref("network.protocol-handler.warn-external.snews", true);
 pref("network.protocol-handler.warn-external.nntp", true);
 
 // bug 1005566 - Disable seer until properly supported
-pref("network.seer.enabled", false);
+// bug 1021370 - Rename Seer to Predictor
+pref("network.predictor.enabled", false);
 
 pref("mail.biff.show_new_alert",     true);
+
+// default calendar integration
+pref("mail.calendar-integration.opt-out", false);
 
 pref("mailnews.ui.deleteMarksRead", true);
 
@@ -561,12 +567,10 @@ pref("app.update.cert.maxErrors", 5);
 // If these conditions aren't met it will be treated the same as when there is
 // no update available. This validation will not be performed when using the
 // |app.update.url.override| preference for update checking.
-pref("app.update.certs.1.issuerName", "OU=Equifax Secure Certificate Authority,O=Equifax,C=US");
+pref("app.update.certs.1.issuerName", "CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US");
 pref("app.update.certs.1.commonName", "aus2-community.mozilla.org");
-pref("app.update.certs.2.issuerName", "CN=GeoTrust SSL CA,O=\"GeoTrust, Inc.\",C=US");
+pref("app.update.certs.2.issuerName", "CN=Thawte SSL CA,O=\"Thawte, Inc.\",C=US");
 pref("app.update.certs.2.commonName", "aus2-community.mozilla.org");
-pref("app.update.certs.3.issuerName", "CN=Thawte SSL CA,O=\"Thawte, Inc.\",C=US");
-pref("app.update.certs.3.commonName", "aus2-community.mozilla.org");
 
 // Interval: Time between checks for a new version (in seconds)
 //           default=1 day
@@ -609,9 +613,9 @@ pref("extensions.blocklist.interval", 86400);
 // Controls what level the blocklist switches from warning about items to forcibly
 // blocking them.
 pref("extensions.blocklist.level", 2);
-pref("extensions.blocklist.url", "https://addons.mozilla.org/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
+pref("extensions.blocklist.url", "https://blocklist.addons.mozilla.org/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
 pref("extensions.blocklist.detailsURL", "https://www.mozilla.com/%LOCALE%/blocklist/");
-pref("extensions.blocklist.itemURL", "https://addons.mozilla.org/%LOCALE%/%APP%/blocked/%blockID%");
+pref("extensions.blocklist.itemURL", "https://blocklist.addons.mozilla.org/%LOCALE%/%APP%/blocked/%blockID%");
 
 // Update preferences for installed Extensions and Themes.
 // Symmetric (can be overridden by individual extensions),
@@ -655,7 +659,8 @@ pref("extensions.modern@themes.mozilla.org.name", "chrome://navigator/locale/nav
 pref("extensions.modern@themes.mozilla.org.description", "chrome://navigator/locale/navigator.properties");
 
 pref("xpinstall.enabled", true);
-pref("xpinstall.whitelist.add", "addons.mozilla.org");
+// Built-in default permissions.
+pref("permissions.manager.defaultsUrl", "resource:///defaults/permissions");
 
 pref("lightweightThemes.update.enabled", true);
 
@@ -715,6 +720,8 @@ pref("privacy.item.offlineApps", false);
 pref("privacy.sanitize.sanitizeOnShutdown", false);
 pref("privacy.sanitize.promptOnSanitize", true);
 
+pref("privacy.warn_tracking_content", true);
+
 // Show XUL error pages instead of alerts for errors
 pref("browser.xul.error_pages.enabled", true);
 pref("browser.xul.error_pages.expert_bad_cert", false);
@@ -748,17 +755,7 @@ pref("dom.ipc.plugins.enabled.x86_64", true);
 // See bug 621117.
 pref("dom.ipc.plugins.nativeCursorSupport", true);
 #else
-#ifdef XP_OS2
-// Odin crashes MMPM in OOP mode, disable it for now
-pref("dom.ipc.plugins.enabled.npflos2.dll", false);
-// And IPC is generally broken there (a fix is TBD), so disable it at all for now
-// And IPC is generally broken now (see https://github.com/bitwiseworks/mozilla-os2/issues/106)
-// so disable it at all for the present time (both plugins and content)
-pref("dom.ipc.plugins.enabled", false);
-pref("dom.ipc.tabs.disabled", true);
-#else
 pref("dom.ipc.plugins.enabled", true);
-#endif
 #endif
 
 // plugin finder service url
@@ -770,6 +767,9 @@ pref("plugins.hide_infobar_for_carbon_failure_plugin", false);
 pref("plugins.hide_infobar_for_missing_plugin", false);
 pref("plugins.click_to_play", true);
 pref("plugin.disable", false);
+
+// Digital Rights Management, Encrypted Media Extensions
+pref("media.eme.enabled", false);
 
 #ifndef XP_MACOSX
 // Restore the spinner that was removed in bug 481359
@@ -820,8 +820,7 @@ pref("security.mixed_content.block_active_content", true);
 // Turn on the CSP 1.0 parser for Content Security Policy headers
 pref("security.csp.speccompliant", true);
 
-// REMOVE once bug 903439 is fixed (no geolocation API key at this time)
-pref("geo.enabled", false);
+pref("geo.wifi.uri", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
 
 // FAQ URLs
 pref("browser.geolocation.warning.infoURL", "http://www.seamonkey-project.org/doc/2.0/geolocation");
@@ -860,6 +859,7 @@ pref("services.sync.prefs.sync.browser.download.manager.scanWhenDone", true);
 pref("services.sync.prefs.sync.browser.formfill.enable", true);
 pref("services.sync.prefs.sync.browser.link.open_external", true);
 pref("services.sync.prefs.sync.browser.link.open_newwindow", true);
+pref("services.sync.prefs.sync.browser.offline-apps.notify", true);
 pref("services.sync.prefs.sync.browser.safebrowsing.enabled", true);
 pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", true);
 pref("services.sync.prefs.sync.browser.search.update", true);
@@ -874,7 +874,9 @@ pref("services.sync.prefs.sync.browser.tabs.warnOnCloseOther", true);
 pref("services.sync.prefs.sync.browser.tabs.warnOnOpen", true);
 pref("services.sync.prefs.sync.browser.urlbar.autocomplete.enabled", true);
 pref("services.sync.prefs.sync.browser.urlbar.autoFill", true);
-pref("services.sync.prefs.sync.browser.urlbar.default.behavior", true);
+pref("services.sync.prefs.sync.browser.urlbar.suggest.history", true);
+pref("services.sync.prefs.sync.browser.urlbar.suggest.bookmark", true);
+pref("services.sync.prefs.sync.browser.urlbar.suggest.history.onlyTyped", true);
 pref("services.sync.prefs.sync.dom.disable_open_during_load", true);
 pref("services.sync.prefs.sync.dom.disable_window_flip", true);
 pref("services.sync.prefs.sync.dom.disable_window_move_resize", true);
@@ -939,9 +941,9 @@ pref("services.sync.prefs.sync.mailnews.view_default_charset", true);
 pref("services.sync.prefs.sync.mailnews.wraplength", true);
 pref("services.sync.prefs.sync.network.cookie.cookieBehavior", true);
 pref("services.sync.prefs.sync.network.cookie.lifetimePolicy", true);
+pref("services.sync.prefs.sync.offline-apps.allow_by_default", true);
 pref("services.sync.prefs.sync.permissions.default.image", true);
 pref("services.sync.prefs.sync.privacy.donottrackheader.enabled", true);
-pref("services.sync.prefs.sync.privacy.donottrackheader.value", true);
 pref("services.sync.prefs.sync.privacy.item.cache", true);
 pref("services.sync.prefs.sync.privacy.item.cookies", true);
 pref("services.sync.prefs.sync.privacy.item.downloads", true);
@@ -953,6 +955,8 @@ pref("services.sync.prefs.sync.privacy.item.sessions", true);
 pref("services.sync.prefs.sync.privacy.item.urlbar", true);
 pref("services.sync.prefs.sync.privacy.sanitize.promptOnSanitize", true);
 pref("services.sync.prefs.sync.privacy.sanitize.sanitizeOnShutdown", true);
+pref("services.sync.prefs.sync.privacy.trackingprotection.enabled", true);
+pref("services.sync.prefs.sync.privacy.warn_tracking_content", true);
 pref("services.sync.prefs.sync.security.OCSP.enabled", true);
 pref("services.sync.prefs.sync.security.OCSP.require", true);
 pref("services.sync.prefs.sync.security.default_personal_cert", true);
@@ -969,3 +973,7 @@ pref("services.sync.prefs.sync.security.warn_viewing_mixed", true);
 pref("services.sync.prefs.sync.signon.rememberSignons", true);
 pref("services.sync.prefs.sync.spellchecker.dictionary", true);
 pref("services.sync.prefs.sync.xpinstall.whitelist.required", true);
+
+// Disable cache v2 since migration has not been done, it is pending in bug 1021843.
+pref("browser.cache.use_new_backend",       0);
+pref("browser.cache.use_new_backend_temp",  false);

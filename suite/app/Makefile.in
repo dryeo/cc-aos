@@ -43,6 +43,7 @@ ifeq ($(OS_ARCH),WINNT)
 EXTRA_DEPS += seamonkey.exe.manifest
 endif
 
+# This needs adapting
 ifeq ($(OS_ARCH),OS2)
 RESFILE = splashos2.res
 RCFLAGS += -DMOZ_SUITE
