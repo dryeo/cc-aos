@@ -116,7 +116,7 @@ nsMessengerOS2Integration::OnItemEvent(nsIMsgFolder *, nsIAtom *)
 }
 
 NS_IMETHODIMP
-nsMessengerOS2Integration::OnItemIntPropertyChanged(nsIMsgFolder *aItem, nsIAtom *aProperty, int32_t aOldValue, int32_t aNewValue)
+nsMessengerOS2Integration::OnItemIntPropertyChanged(nsIMsgFolder *aItem, nsIAtom *aProperty, int64_t aOldValue, int64_t aNewValue)
 {
   PULONG pUnreadState = NULL;
   APIRET rc = DosGetNamedSharedMem((PVOID *)&pUnreadState, WARPCENTER_SHAREDMEM,

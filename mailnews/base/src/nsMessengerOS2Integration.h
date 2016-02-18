@@ -18,7 +18,6 @@ class nsMessengerOS2Integration : public nsIMessengerOSIntegration,
 {
 public:
   nsMessengerOS2Integration();
-  virtual ~nsMessengerOS2Integration();
   virtual nsresult Init();
 
   NS_DECL_ISUPPORTS
@@ -26,6 +25,7 @@ public:
   NS_DECL_NSIFOLDERLISTENER
 
 private:
+  virtual ~nsMessengerOS2Integration();
   nsCOMPtr<nsIAtom> mBiffStateAtom;
   nsCOMPtr<nsIAtom> mTotalUnreadMessagesAtom;
 };
