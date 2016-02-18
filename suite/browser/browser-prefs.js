@@ -755,7 +755,16 @@ pref("dom.ipc.plugins.enabled.x86_64", true);
 // See bug 621117.
 pref("dom.ipc.plugins.nativeCursorSupport", true);
 #else
+#ifdef XP_OS2
+// Odin crashes MMPM in OOP mode, disable it for now
+pref("dom.ipc.plugins.enabled.npflos2.dll", false);
+// And IPC is generally broken now (see https://github.com/bitwiseworks/mozilla-os2/issues/106)
+// so disable it at all for the present time (both plugins and content)
+pref("dom.ipc.plugins.enabled", false);
+pref("dom.ipc.tabs.disabled", true);
+#else
 pref("dom.ipc.plugins.enabled", true);
+#endif
 #endif
 
 // plugin finder service url
