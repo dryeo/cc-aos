@@ -76,7 +76,7 @@ ifeq ($(OS_ARCH),OS2)
 # Note that this may need to be converted to use the png to ico converter
 RESFILE=splashos2.res
 RCFLAGS += -DMOZ_INSTANTBIRD
-RCFLAGS += -DINSTANTBIRD_ICO=\"$(DIST)/branding/instantbird.ico\"
+RCFLAGS += -DINSTANTBIRD_ICO=\"$(DIST)/branding/instantbird_os2.ico\"
 endif
 
 include $(topsrcdir)/config/rules.mk
