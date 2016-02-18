@@ -10,6 +10,9 @@
 #if defined(XP_WIN)
 #include <windows.h>
 #include <stdlib.h>
+#elif defined(XP_OS2)
+#include <time.h>
+#include <unistd.h>
 #elif defined(XP_UNIX)
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -330,6 +333,9 @@ int main(int argc, char* argv[])
 #elif defined(XP_WIN)
   IO_COUNTERS ioCounters;
   gotCounters = GetProcessIoCounters(GetCurrentProcess(), &ioCounters);
+#elif defined(XP_OS2)
+  // no counters at the moment
+  gotCounters = 0;
 #endif
 
   nsIFile *xreDirectory;
