@@ -152,7 +152,11 @@
 @RESPATH@/platform.ini
 #ifndef MOZ_NATIVE_SQLITE
 #ifndef MOZ_FOLD_LIBS
+#ifdef XP_OS2
+@RESPATH@/@DLL_PREFIX@mozsqlt3@DLL_SUFFIX@
+#else
 @RESPATH@/@DLL_PREFIX@mozsqlite3@DLL_SUFFIX@
+#endif
 #endif
 #endif
 #ifdef UNIX_BUT_NOT_MAC
@@ -160,6 +164,33 @@
 #ifdef MOZ_UPDATER
 @RESPATH@/icons/*.png
 #endif
+#endif
+
+; [OS/2]
+#ifdef XP_OS2
+@BINPATH@/MozSounds.cmd
+@BINPATH@/freebl3.xqs
+@BINPATH@/js.xqs
+@BINPATH@/mozalloc.xqs
+@BINPATH@/README.OS2
+#ifndef MOZ_STATIC_JS
+@BINPATH@/mozjs.xqs
+#endif
+@BINPATH@/mozsqlt3.xqs
+@BINPATH@/nspr4.xqs
+@BINPATH@/nss3.xqs
+@BINPATH@/nssckbi.xqs
+@BINPATH@/nssdbm3.xqs
+@BINPATH@/nssutil3.xqs
+@BINPATH@/plc4.xqs
+@BINPATH@/plds4.xqs
+@BINPATH@/plugin-container.xqs
+@BINPATH@/smime3.xqs
+@BINPATH@/softokn3.xqs
+@BINPATH@/ssl3.xqs
+@BINPATH@/updater.xqs
+@BINPATH@/xpcshell.xqs
+@BINPATH@/xul.xqs
 #endif
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -217,7 +248,9 @@
 @RESPATH@/components/nsNewsAutoCompleteSearch.js
 @RESPATH@/components/nsNewsAutoCompleteSearch.manifest
 @RESPATH@/components/services-crypto-component.xpt
+#ifndef XP_OS2
 @RESPATH@/components/shellservice.xpt
+#endif
 @RESPATH@/components/xpcom_base.xpt
 @RESPATH@/components/xpcom_system.xpt
 @RESPATH@/components/xpcom_components.xpt
@@ -269,8 +302,10 @@
 @RESPATH@/components/mailContentHandler.js
 @RESPATH@/components/mailGlue.js
 @RESPATH@/components/nsMailDefaultHandler.js
+#ifndef XP_OS2
 @RESPATH@/components/nsSetDefaultMail.js
 @RESPATH@/components/shell.manifest
+#endif
 @RESPATH@/components/offlineStartup.js
 @RESPATH@/components/offlineStartup.manifest
 @RESPATH@/components/steelApplication.js
@@ -842,8 +877,10 @@
 #ifdef XP_MACOSX
 @BINPATH@/crashreporter.app/
 #else
+#ifndef XP_OS2
 @BINPATH@/crashreporter@BIN_SUFFIX@
 @RESPATH@/crashreporter.ini
+#endif
 #ifdef XP_UNIX
 @RESPATH@/Throbber-small.gif
 #endif

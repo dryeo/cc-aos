@@ -131,7 +131,7 @@
 
 [browser]
 ; [Base Browser Files]
-#ifdef XP_WIN32
+#ifdef WIN_OR_OS2
 @BINPATH@/@MOZ_APP_NAME@.exe
 #else
 @BINPATH@/@MOZ_APP_NAME@-bin
@@ -144,7 +144,11 @@
 #endif
 #ifndef MOZ_NATIVE_SQLITE
 #ifndef MOZ_FOLD_LIBS
+#ifdef XP_OS2
+@BINPATH@/@DLL_PREFIX@mozsqlt3@DLL_SUFFIX@
+#else
 @BINPATH@/@DLL_PREFIX@mozsqlite3@DLL_SUFFIX@
+#endif
 #endif
 #endif
 @RESPATH@/license.txt
@@ -390,6 +394,7 @@
 @RESPATH@/components/folderLookupService.js
 @RESPATH@/components/formautofill.manifest
 @RESPATH@/components/FormAutofillContentService.js
+@RESPATH@/components/FormAutofillStartup.js
 @RESPATH@/components/Identity.manifest
 @RESPATH@/components/htmlMenuBuilder.js
 @RESPATH@/components/htmlMenuBuilder.manifest
@@ -448,8 +453,10 @@
 @RESPATH@/components/nsSidebar.js
 @RESPATH@/components/nsSuiteDownloadManagerUI.js
 @RESPATH@/components/nsSuiteGlue.js
+#ifndef XP_OS2
 @RESPATH@/components/nsSetDefault.js
 @RESPATH@/components/nsSetDefault.manifest
+#endif
 @RESPATH@/components/nsTaggingService.js
 @RESPATH@/components/nsTypeAheadFind.js
 #ifdef MOZ_UPDATER
@@ -582,24 +589,32 @@
 #ifdef MOZ_UPDATER
 @RESPATH@/icons/updater.png
 #endif
-#elifdef XP_WIN32
-@RESPATH@/chrome/icons/default/bookmarkproperties.ico
-@RESPATH@/chrome/icons/default/downloadManager.ico
-@RESPATH@/chrome/icons/default/editorWindow.ico
-@RESPATH@/chrome/icons/default/findBookmarkWindow.ico
-@RESPATH@/chrome/icons/default/findHistoryWindow.ico
-@RESPATH@/chrome/icons/default/gif-file.ico
-@RESPATH@/chrome/icons/default/history-window.ico
-@RESPATH@/chrome/icons/default/html-file.ico
-@RESPATH@/chrome/icons/default/image-file.ico
-@RESPATH@/chrome/icons/default/jpeg-file.ico
-@RESPATH@/chrome/icons/default/JSConsoleWindow.ico
-@RESPATH@/chrome/icons/default/main-window.ico
-@RESPATH@/chrome/icons/default/misc-file.ico
-@RESPATH@/chrome/icons/default/places.ico
-@RESPATH@/chrome/icons/default/script-file.ico
-@RESPATH@/chrome/icons/default/xml-file.ico
-@RESPATH@/chrome/icons/default/xul-file.ico
+#elifdef WIN_OR_OS2
+ @BINPATH@/chrome/icons/default/bookmarkproperties.ico
+ @BINPATH@/chrome/icons/default/downloadManager.ico
+ @BINPATH@/chrome/icons/default/editorWindow.ico
+ @BINPATH@/chrome/icons/default/findBookmarkWindow.ico
+ @BINPATH@/chrome/icons/default/findHistoryWindow.ico
+ @BINPATH@/chrome/icons/default/history-window.ico
+ @BINPATH@/chrome/icons/default/JSConsoleWindow.ico
+ @BINPATH@/chrome/icons/default/main-window.ico
+ @BINPATH@/chrome/icons/default/places.ico
+#ifdef XP_WIN32
+ @BINPATH@/chrome/icons/default/gif-file.ico
+ @BINPATH@/chrome/icons/default/history-window.ico
+ @BINPATH@/chrome/icons/default/html-file.ico
+ @BINPATH@/chrome/icons/default/misc-file.ico
+ @BINPATH@/chrome/icons/default/image-file.ico
+ @BINPATH@/chrome/icons/default/jpeg-file.ico
+ @BINPATH@/chrome/icons/default/JSConsoleWindow.ico
+ @BINPATH@/chrome/icons/default/main-window.ico
+ @BINPATH@/chrome/icons/default/misc-file.ico
+ @BINPATH@/chrome/icons/default/places.ico
+ @BINPATH@/chrome/icons/default/script-file.ico
+ @BINPATH@/chrome/icons/default/xml-file.ico
+ @BINPATH@/chrome/icons/default/xul-file.ico
+ #endif
+#endif
 #endif
 
 ; [Default Preferences]
@@ -615,6 +630,7 @@
 @RESPATH@/greprefs.js
 @RESPATH@/defaults/autoconfig/platform.js
 @RESPATH@/defaults/autoconfig/prefcalls.js
+@RESPATH@/defaults/permissions
 #ifndef LIBXUL_SDK
 ; Warning: changing the path to channel-prefs.js can cause bugs. (Bug 756325)
 @RESPATH@/defaults/pref/channel-prefs.js
@@ -752,6 +768,32 @@ bin/libfreebl_32int64_3.so
 #endif
 #endif
 
+; [OS/2]
+#ifdef XP_OS2
+@BINPATH@/MozSounds.cmd
+@BINPATH@/mozalloc.xqs
+@BINPATH@/README.OS2
+#ifndef MOZ_STATIC_JS
+@BINPATH@/mozjs.xqs
+#endif
+@BINPATH@/mozsqlt3.xqs
+@BINPATH@/nspr4.xqs
+@BINPATH@/nss3.xqs
+@BINPATH@/nssckbi.xqs
+@BINPATH@/nssdbm3.xqs
+@BINPATH@/nssutil3.xqs
+@BINPATH@/plc4.xqs
+@BINPATH@/plds4.xqs
+;@BINPATH@/plugin-container.xqs
+@BINPATH@/smime3.xqs
+@BINPATH@/softokn3.xqs
+@BINPATH@/ssl3.xqs
+;@BINPATH@/updater.xqs
+@BINPATH@/xul.xqs
+@BINPATH@/seamonkey.xqs
+@BINPATH@/components/suite.xqs
+#endif
+
 [mail]
 ; MailNews component xpts
 @RESPATH@/components/addrbook.xpt
@@ -821,7 +863,7 @@ bin/libfreebl_32int64_3.so
 @RESPATH@/chrome/icons/default/msgcomposeWindow.png
 @RESPATH@/chrome/icons/default/msgcomposeWindow16.png
 @RESPATH@/chrome/icons/default/msgcomposeWindow48.png
-#elifdef XP_WIN32
+#elifdef WIN_OR_OS2
 @RESPATH@/chrome/icons/default/abcardWindow.ico
 @RESPATH@/chrome/icons/default/ablistWindow.ico
 @RESPATH@/chrome/icons/default/addressbookWindow.ico
@@ -877,7 +919,7 @@ bin/libfreebl_32int64_3.so
 #ifdef MOZ_GTK2
 @RESPATH@/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window.xpm
 @RESPATH@/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window16.xpm
-#elifdef XP_WIN32
+#elifdef WIN_OR_OS2
 @RESPATH@/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window.ico
 #endif
 @RESPATH@/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome.manifest
@@ -908,6 +950,8 @@ bin/libfreebl_32int64_3.so
 @RESPATH@/extensions/inspector@mozilla.org/platform/Linux/chrome/icons/default/winInspectorMain.xpm
 #elifdef XP_WIN32
 @RESPATH@/extensions/inspector@mozilla.org/platform/WINNT/chrome/icons/default/winInspectorMain.ico
+#elifdef XP_OS2
+@BINPATH@/extensions/inspector@mozilla.org/platform/OS2/chrome/icons/default/winInspectorMain.ico
 #endif
 @RESPATH@/extensions/inspector@mozilla.org/components/components.list
 @RESPATH@/extensions/inspector@mozilla.org/components/inspector-cmdline.js
