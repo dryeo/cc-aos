@@ -21,7 +21,7 @@ DIRS += [
     'im',
 ]
 
-if CONFIG['MOZ_WIDGET_TOOLKIT'] in ('windows', 'gtk2', 'cocoa', 'qt'):
+if CONFIG['MOZ_WIDGET_TOOLKIT'] in ('windows', 'gtk2', 'cocoa', 'qt', 'os2'):
     DIRS += ['shell']
 
 TEST_DIRS += ['test']

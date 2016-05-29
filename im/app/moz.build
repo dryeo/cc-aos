@@ -32,6 +32,10 @@ if not CONFIG['LIBXUL_SDK']:
         # a console application.
         WIN32_EXE_LDFLAGS += ['-ENTRY:wmainCRTStartup']
 
+    if CONFIG['OS_ARCH'] == 'OS2':
+        RCINCLUDE = 'splashos2.rc'
+        DEFINES['MOZ_INSTANTBIRD'] = True
+
     # Control the default heap size.
     # This is the heap returned by GetProcessHeap().
     # As we use the CRT heap, the default size is too large and wastes VM.

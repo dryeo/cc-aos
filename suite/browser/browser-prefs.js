@@ -567,12 +567,10 @@ pref("app.update.cert.maxErrors", 5);
 // If these conditions aren't met it will be treated the same as when there is
 // no update available. This validation will not be performed when using the
 // |app.update.url.override| preference for update checking.
-pref("app.update.certs.1.issuerName", "OU=Equifax Secure Certificate Authority,O=Equifax,C=US");
+pref("app.update.certs.1.issuerName", "CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US");
 pref("app.update.certs.1.commonName", "aus2-community.mozilla.org");
-pref("app.update.certs.2.issuerName", "CN=GeoTrust SSL CA,O=\"GeoTrust, Inc.\",C=US");
+pref("app.update.certs.2.issuerName", "CN=Thawte SSL CA,O=\"Thawte, Inc.\",C=US");
 pref("app.update.certs.2.commonName", "aus2-community.mozilla.org");
-pref("app.update.certs.3.issuerName", "CN=Thawte SSL CA,O=\"Thawte, Inc.\",C=US");
-pref("app.update.certs.3.commonName", "aus2-community.mozilla.org");
 
 // Interval: Time between checks for a new version (in seconds)
 //           default=1 day
@@ -661,7 +659,8 @@ pref("extensions.modern@themes.mozilla.org.name", "chrome://navigator/locale/nav
 pref("extensions.modern@themes.mozilla.org.description", "chrome://navigator/locale/navigator.properties");
 
 pref("xpinstall.enabled", true);
-pref("xpinstall.whitelist.add", "addons.mozilla.org");
+// Built-in default permissions.
+pref("permissions.manager.defaultsUrl", "resource:///defaults/permissions");
 
 pref("lightweightThemes.update.enabled", true);
 
@@ -756,7 +755,16 @@ pref("dom.ipc.plugins.enabled.x86_64", true);
 // See bug 621117.
 pref("dom.ipc.plugins.nativeCursorSupport", true);
 #else
+#ifdef XP_OS2
+// Odin crashes MMPM in OOP mode, disable it for now
+pref("dom.ipc.plugins.enabled.npflos2.dll", false);
+// And IPC is generally broken now (see https://github.com/bitwiseworks/mozilla-os2/issues/106)
+// so disable it at all for the present time (both plugins and content)
+pref("dom.ipc.plugins.enabled", false);
+pref("dom.ipc.tabs.disabled", true);
+#else
 pref("dom.ipc.plugins.enabled", true);
+#endif
 #endif
 
 // plugin finder service url
@@ -821,8 +829,7 @@ pref("security.mixed_content.block_active_content", true);
 // Turn on the CSP 1.0 parser for Content Security Policy headers
 pref("security.csp.speccompliant", true);
 
-// REMOVE once bug 903439 is fixed (no geolocation API key at this time)
-pref("geo.enabled", false);
+pref("geo.wifi.uri", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
 
 // FAQ URLs
 pref("browser.geolocation.warning.infoURL", "http://www.seamonkey-project.org/doc/2.0/geolocation");
@@ -975,3 +982,7 @@ pref("services.sync.prefs.sync.security.warn_viewing_mixed", true);
 pref("services.sync.prefs.sync.signon.rememberSignons", true);
 pref("services.sync.prefs.sync.spellchecker.dictionary", true);
 pref("services.sync.prefs.sync.xpinstall.whitelist.required", true);
+
+// Disable cache v2 since migration has not been done, it is pending in bug 1021843.
+pref("browser.cache.use_new_backend",       0);
+pref("browser.cache.use_new_backend_temp",  false);

@@ -118,7 +118,11 @@
   @DIR_MACOS@components/widget_mac.xpt
 #endif
 @DIR_MACOS@components/@DLL_PREFIX@xpcom_compat_c@DLL_SUFFIX@
-@DIR_MACOS@components/@DLL_PREFIX@xpcom_core@DLL_SUFFIX@
+#ifdef XP_OS2
+  @DIR_MACOS@components/@DLL_PREFIX@xpcomcor@DLL_SUFFIX@
+#else
+  @DIR_MACOS@components/@DLL_PREFIX@xpcom_core@DLL_SUFFIX@
+#endif
 @DIR_MACOS@components/xpcom_obsolete.xpt
 @DIR_MACOS@components/xpinstall.xpt
 @DIR_MACOS@components/@DLL_PREFIX@xpinstal@DLL_SUFFIX@
@@ -800,8 +804,12 @@ uninstall/uninstall.exe
   components/@DLL_PREFIX@jsd3250@DLL_SUFFIX@
 #endif
 @DIR_MACOS@components/@DLL_PREFIX@mail@DLL_SUFFIX@
-#ifdef XP_WIN
+#ifdef XP_OS2
   components/@DLL_PREFIX@mailcmp@DLL_SUFFIX@
+#else
+  #ifdef XP_WIN
+    components/@DLL_PREFIX@mailcmp@DLL_SUFFIX@
+  #endif
 #endif
 @DIR_MACOS@components/@DLL_PREFIX@mailcomps@DLL_SUFFIX@
 @DIR_MACOS@components/@DLL_PREFIX@mork@DLL_SUFFIX@
