@@ -169,7 +169,6 @@
 ; [OS/2]
 #ifdef XP_OS2
 @BINPATH@/MozSounds.cmd
-@BINPATH@/freebl3.xqs
 @BINPATH@/js.xqs
 @BINPATH@/mozalloc.xqs
 @BINPATH@/README.OS2
@@ -177,20 +176,27 @@
 @BINPATH@/mozjs.xqs
 #endif
 @BINPATH@/mozsqlt3.xqs
+#ifndef MOZ_NATIVE_NSPR
+#ifndef MOZ_FOLD_LIBS
 @BINPATH@/nspr4.xqs
+@BINPATH@/plc4.xqs
+@BINPATH@/plds4.xqs
+#endif
+#ifndef MOZ_NATIVE_NSS
+@BINPATH@/freebl3.xqs
 @BINPATH@/nss3.xqs
 @BINPATH@/nssckbi.xqs
 @BINPATH@/nssdbm3.xqs
 @BINPATH@/nssutil3.xqs
-@BINPATH@/plc4.xqs
-@BINPATH@/plds4.xqs
-@BINPATH@/plugin-container.xqs
 @BINPATH@/smime3.xqs
 @BINPATH@/softokn3.xqs
 @BINPATH@/ssl3.xqs
+#endif
+@BINPATH@/plugin-container.xqs
 @BINPATH@/updater.xqs
 @BINPATH@/xpcshell.xqs
 @BINPATH@/xul.xqs
+#endif
 #endif
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
