@@ -83,7 +83,7 @@ static void Output(const char *fmt, ... )
       hmq = WinCreateMsgQueue(hab, 0);
     }
     if (hmq != NULLHANDLE) {
-      WinMessageBox(HWND_DESKTOP, 0, msg, "Firefox", 0,
+      WinMessageBox(HWND_DESKTOP, 0, msg, "SeaMonkey", 0,
                     MB_OK | MB_ERROR | MB_MOVEABLE);
     }
   }
