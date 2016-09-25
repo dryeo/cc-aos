@@ -117,6 +117,13 @@ function test_edit_as_new_in_draft() {
   assert_equals(draftsFolder.getTotalMessages(false), 0);
 }
 
+// This function landed in bug 1261707 on TB 48. We need it for the test below to work.
+function setup_msg_contents(aCwc, aAddr, aSubj, aBody) {
+  aCwc.type(aCwc.eid("addressCol2#1"), aAddr);
+  aCwc.type(aCwc.eid("msgSubject"), aSubj);
+  aCwc.type(aCwc.eid("content-frame"), aBody);
+}
+
 /**
  * Tests space stuffing of plaintext message.
  */
