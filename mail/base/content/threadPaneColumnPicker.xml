@@ -143,37 +143,13 @@
         <parameter name="aDestFolder"/>
         <parameter name="aUseChildren"/>
         <body><![CDATA[
-          // Get the current folder's column state, plus the "swapped" column
-          // state, which swaps "From" and "Recipient" if only one is shown.
-          // This is useful for copying an incoming folder's columns to an
-          // outgoing folder, or vice versa.
-          let colState = gFolderDisplay.getColumnStates();
-
-          let myColStateString = JSON.stringify(colState);
-          let swappedColStateString;
-          if (colState.senderCol.visible != colState.recipientCol.visible) {
-            let tmp = colState.senderCol;
-            colState.senderCol = colState.recipientCol;
-            colState.recipientCol = tmp;
-            swappedColStateString = JSON.stringify(colState);
-          } else {
-            swappedColStateString = myColStateString;
-          }
-
-          function isOutgoing(folder) {
-            return folder.isSpecialFolder(
-              DBViewWrapper.prototype.OUTGOING_FOLDER_FLAGS, true
-            );
-          }
-
-          let amIOutgoing = isOutgoing(gFolderDisplay.displayedFolder);
-          function colStateString(folder) {
-            return (isOutgoing(folder) == amIOutgoing ? myColStateString :
-                    swappedColStateString);
-          }
+          // Get the current folder's column state.
+          let propName = gFolderDisplay.PERSISTED_COLUMN_PROPERTY_NAME;
+          let dbFolderInfo = gFolderDisplay.displayedFolder.msgDatabase
+                                           .dBFolderInfo;
+          let columnStateString = dbFolderInfo.getCharProperty(propName);
 
           // Now propagate appropriately...
-          const propName = gFolderDisplay.PERSISTED_COLUMN_PROPERTY_NAME;
           if (aUseChildren) {
             // Generate an observer notification when we have finished
             // configuring all folders.  This is currently done for the benefit
@@ -183,11 +159,10 @@
                                            "msg-folder-columns-propagated", "");
             };
             MailUtils.setStringPropertyOnFolderAndDescendents(
-              propName, colStateString, aDestFolder, observerCallback
+              propName, columnStateString, aDestFolder, observerCallback
             );
           } else {
-            aDestFolder.setStringProperty(propName,
-                                          colStateString(aDestFolder));
+            aDestFolder.setStringProperty(propName, columnStateString);
             // null out to avoid memory bloat
             aDestFolder.msgDatabase = null;
           }
