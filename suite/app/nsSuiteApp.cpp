@@ -3,6 +3,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#if defined(XP_OS2)
+#define INCL_BASE
+#define INCL_PM
+#include <os2.h>
+#endif
+
 #include "nsXULAppAPI.h"
 #include "mozilla/AppData.h"
 #include "application.ini.h"
@@ -10,6 +16,9 @@
 #if defined(XP_WIN)
 #include <windows.h>
 #include <stdlib.h>
+#elif defined(XP_OS2)
+#include <time.h>
+#include <unistd.h>
 #elif defined(XP_UNIX)
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -56,6 +65,30 @@ static void Output(const char *fmt, ... )
   va_list ap;
   va_start(ap, fmt);
 
+#ifdef XP_OS2
+  char msg[2048];
+  // Put the message to the console...
+  vsnprintf(msg, sizeof(msg), fmt, ap);
+  // ...and to a message box
+  HAB hab = WinInitialize(0);
+  if (hab) {
+    HMQ hmq = WinCreateMsgQueue(hab, 0);
+    if (!hmq && ERRORIDERROR(WinGetLastError(hab)) == PMERR_NOT_IN_A_PM_SESSION) {
+      // Morph from VIO to PM
+      PPIB ppib;
+      PTIB ptib;
+      DosGetInfoBlocks(&ptib, &ppib);
+      ppib->pib_ultype = 3;
+      // Retry
+      hmq = WinCreateMsgQueue(hab, 0);
+    }
+    if (hmq != NULLHANDLE) {
+      WinMessageBox(HWND_DESKTOP, 0, msg, "SeaMonkey", 0,
+                    MB_OK | MB_ERROR | MB_MOVEABLE);
+    }
+  }
+#endif
+
 #ifdef XP_WIN
   char msg[2048];
 
@@ -100,7 +133,7 @@ static bool IsArg(const char* arg, const char* s)
     return !strcasecmp(arg, s);
   }
 
-#if defined(XP_WIN)
+#if defined(XP_WIN) || defined(XP_OS2)
   if (*arg == '/')
     return !strcasecmp(++arg, s);
 #endif
@@ -282,6 +315,9 @@ int main(int argc, char* argv[])
 #elif defined(XP_WIN)
   IO_COUNTERS ioCounters;
   gotCounters = GetProcessIoCounters(GetCurrentProcess(), &ioCounters);
+#elif defined(XP_OS2)
+  // no counters at the moment
+  gotCounters = 0;
 #endif
 
   nsIFile *xreDirectory;

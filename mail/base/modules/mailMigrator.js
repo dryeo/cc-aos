@@ -304,6 +304,21 @@ var MailMigrator = {
         }
       }
 
+      // Several Latin language groups were consolidated into x-western.
+      if (currentUIVersion < 11) {
+        let group = null;
+        try {
+          group = Services.prefs.getComplexValue("font.language.group",
+                                                 Ci.nsIPrefLocalizedString);
+        } catch (ex) {}
+        if (group &&
+            ["tr", "x-baltic", "x-central-euro"].some(g => g == group.data)) {
+          group.data = "x-western";
+          Services.prefs.setComplexValue("font.language.group",
+                                         Ci.nsIPrefLocalizedString, group);
+        }
+      }
+
       // Update the migration version.
       Services.prefs.setIntPref(UI_VERSION_PREF, UI_VERSION);
 

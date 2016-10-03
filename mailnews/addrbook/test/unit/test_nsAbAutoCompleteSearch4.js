@@ -139,6 +139,10 @@ function run_test()
       print("... got " + i + ": " + obs._result.getValueAt(i));
     }
 
+    for (var i = 0; i < obs._result.matchCount; i++) {
+      print("... got " + i + ": " + obs._result.getValueAt(i));
+    }
+
     do_check_eq(obs._search, acs);
     do_check_eq(obs._result.searchString, element);
     do_check_eq(obs._result.searchResult, ACR.RESULT_SUCCESS);

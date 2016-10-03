@@ -140,7 +140,11 @@
 @RESPATH@/platform.ini
 #ifndef MOZ_NATIVE_SQLITE
 #ifndef MOZ_FOLD_LIBS
+#ifdef XP_OS2
+@BINPATH@/@DLL_PREFIX@mozsqlt3@DLL_SUFFIX@
+#else
 @BINPATH@/@DLL_PREFIX@mozsqlite3@DLL_SUFFIX@
+#endif
 #endif
 #endif
 #ifdef UNIX_BUT_NOT_MAC
@@ -152,6 +156,13 @@
 #ifdef MOZ_GTK3
 @BINPATH@/@DLL_PREFIX@mozgtk@DLL_SUFFIX@
 @BINPATH@/gtk2/@DLL_PREFIX@mozgtk@DLL_SUFFIX@
+#endif
+
+; [OS/2]
+#ifdef XP_OS2
+@BINPATH@/MozSounds.cmd
+@BINPATH@/*.xqs
+@BINPATH@/components/*.xqs
 #endif
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -716,8 +727,10 @@
 #ifdef XP_MACOSX
 @BINPATH@/crashreporter.app/
 #else
+#ifndef XP_OS2
 @BINPATH@/crashreporter@BIN_SUFFIX@
 @RESPATH@/crashreporter.ini
+#endif
 #ifdef XP_UNIX
 @RESPATH@/Throbber-small.gif
 #endif

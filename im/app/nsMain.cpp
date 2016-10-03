@@ -10,6 +10,8 @@
 #if defined(XP_WIN)
 #include <windows.h>
 #include <stdlib.h>
+#elif defined(XP_OS2)
+#include <unistd.h>
 #elif defined(XP_UNIX)
 #include <sys/time.h>
 #include <sys/resource.h>

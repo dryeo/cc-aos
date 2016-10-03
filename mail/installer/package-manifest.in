@@ -131,7 +131,11 @@
 @RESPATH@/platform.ini
 #ifndef MOZ_NATIVE_SQLITE
 #ifndef MOZ_FOLD_LIBS
+#ifdef XP_OS2
+@RESPATH@/@DLL_PREFIX@mozsqlt3@DLL_SUFFIX@
+#else
 @RESPATH@/@DLL_PREFIX@mozsqlite3@DLL_SUFFIX@
+#endif
 #endif
 #endif
 #ifdef UNIX_BUT_NOT_MAC
@@ -143,6 +147,39 @@
 #ifdef MOZ_GTK3
 @BINPATH@/@DLL_PREFIX@mozgtk@DLL_SUFFIX@
 @BINPATH@/gtk2/@DLL_PREFIX@mozgtk@DLL_SUFFIX@
+#endif
+
+; [OS/2]
+#ifdef XP_OS2
+@BINPATH@/MozSounds.cmd
+@BINPATH@/js.xqs
+@BINPATH@/mozalloc.xqs
+@BINPATH@/README.OS2
+#ifndef MOZ_STATIC_JS
+@BINPATH@/mozjs.xqs
+#endif
+@BINPATH@/mozsqlt3.xqs
+#ifndef MOZ_NATIVE_NSPR
+#ifndef MOZ_FOLD_LIBS
+@BINPATH@/nspr4.xqs
+@BINPATH@/plc4.xqs
+@BINPATH@/plds4.xqs
+#endif
+#ifndef MOZ_NATIVE_NSS
+@BINPATH@/freebl3.xqs
+@BINPATH@/nss3.xqs
+@BINPATH@/nssckbi.xqs
+@BINPATH@/nssdbm3.xqs
+@BINPATH@/nssutil3.xqs
+@BINPATH@/smime3.xqs
+@BINPATH@/softokn3.xqs
+@BINPATH@/ssl3.xqs
+#endif
+@BINPATH@/plugin-container.xqs
+@BINPATH@/updater.xqs
+@BINPATH@/xpcshell.xqs
+@BINPATH@/xul.xqs
+#endif
 #endif
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,6 +232,7 @@
 @RESPATH@/components/services-crypto-component.xpt
 @RESPATH@/components/captivedetect.xpt
 @RESPATH@/components/shellservice.xpt
+#endif
 @RESPATH@/chrome/toolkit@JAREXT@
 @RESPATH@/chrome/toolkit.manifest
 @RESPATH@/chrome/comm@JAREXT@
@@ -239,8 +277,10 @@
 @RESPATH@/components/mailContentHandler.js
 @RESPATH@/components/mailGlue.js
 @RESPATH@/components/nsMailDefaultHandler.js
+#ifndef XP_OS2
 @RESPATH@/components/nsSetDefaultMail.js
 @RESPATH@/components/shell.manifest
+#endif
 @RESPATH@/components/offlineStartup.js
 @RESPATH@/components/offlineStartup.manifest
 @RESPATH@/components/steelApplication.js
@@ -835,8 +875,10 @@
 #ifdef XP_MACOSX
 @BINPATH@/crashreporter.app/
 #else
+#ifndef XP_OS2
 @BINPATH@/crashreporter@BIN_SUFFIX@
 @RESPATH@/crashreporter.ini
+#endif
 #ifdef XP_UNIX
 @RESPATH@/Throbber-small.gif
 #endif
@@ -849,3 +891,12 @@
 ; Shutdown Terminator
 @RESPATH@/components/nsTerminatorTelemetry.js
 @RESPATH@/components/terminator.manifest
+#endif
+
+#ifdef MOZ_CALENDAR
+[calendar]
+#ifdef NIGHTLY_BUILD
+@RESPATH@/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/
+#else
+@RESPATH@/distribution/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/
+#endif

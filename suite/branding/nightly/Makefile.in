@@ -27,3 +27,6 @@ ifeq (cocoa,$(MOZ_WIDGET_TOOLKIT))
 	cp $(srcdir)/package/mac/background.png       $(DIST)/branding/background.png
 	cp $(srcdir)/package/mac/disk.icns            $(DIST)/branding/disk.icns
 endif
+ifeq ($(OS_ARCH),OS2)
+	cp $(srcdir)/icons/os2/seamonkey.ico           $(DIST)/branding/seamonkey.ico
+endif
