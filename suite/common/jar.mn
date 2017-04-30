@@ -105,7 +105,7 @@ comm.jar:
    content/communicator/platformCommunicatorOverlay.xul             (win/platformCommunicatorOverlay.xul)
 #else
 #ifdef XP_OS2
-*  content/communicator/platformCommunicatorOverlay.xul             (win/platformCommunicatorOverlay.xul)
+   content/communicator/platformCommunicatorOverlay.xul             (win/platformCommunicatorOverlay.xul)
 #else
    content/communicator/platformCommunicatorOverlay.xul             (unix/platformCommunicatorOverlay.xul)
 #endif
