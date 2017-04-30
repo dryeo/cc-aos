@@ -74,6 +74,9 @@ extern "C" {
 #define LDAP_PASCAL
 #define LDAP_CALL
 #endif /* _WINDOWS */
+#if defined (__OS2__)
+#define LDAP_CALL __declspec(dllexport)
+#endif
 #endif /* LDAP_CALL */
 
 #define LDAP_TEMPLATE_VERSION	1

@@ -75,6 +75,9 @@ extern "C" {
 #define LDAP_PASCAL
 #define LDAP_CALL
 #endif /* _WINDOWS */
+#if defined (__OS2__)
+#define LDAP_CALL __declspec(dllexport)
+#endif
 #endif /* LDAP_CALL */
 
 struct ldap_searchattr {

@@ -61,6 +61,9 @@ extern "C" {
 #define LDAP_PASCAL
 #define LDAP_CALL
 #endif /* _WINDOWS */
+#if defined (__OS2__)
+#define LDAP_CALL __declspec(dllexport)
+#endif
 #endif /* LDAP_CALL */
 
 LDAP_API(int) LDAP_C lcache_init( LDAP *ld, void *arg );
