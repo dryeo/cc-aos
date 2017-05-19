@@ -436,6 +436,7 @@ pref("browser.safebrowsing.reportMalwareURL", "http://%LOCALE%.malware-report.mo
 pref("browser.safebrowsing.reportMalwareErrorURL", "http://%LOCALE%.malware-error.mozilla.com/?hl=%LOCALE%");
 
 pref("browser.safebrowsing.warning.infoURL", "http://www.mozilla.org/%LOCALE%/firefox/phishing-protection/");
+pref("browser.safebrowsing.controlledAccess.infoURL", "https://support.mozilla.org/kb/controlledaccess/");
 pref("browser.safebrowsing.malware.reportURL", "http://safebrowsing.clients.google.com/safebrowsing/diagnostic?client=Firefox&hl=%LOCALE%&site=");
 
 // Name of the about: page contributed by safebrowsing to handle display of error
