@@ -821,6 +821,7 @@ bin/libfreebl_32int64_3.so
 @BINPATH@/plc4.xqs
 @BINPATH@/plds4.xqs
 #endif
+#endif
 #ifndef MOZ_NATIVE_NSS
 @BINPATH@/nss3.xqs
 @BINPATH@/nssckbi.xqs
