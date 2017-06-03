@@ -7,7 +7,6 @@ SOURCES += [
     'calBaseModule.cpp',
 ]
 
-#XPCOMBinaryComponent('calbasecomps')
 XPCOMBinaryComponent('calbscmp')
 
 LOCAL_INCLUDES += [

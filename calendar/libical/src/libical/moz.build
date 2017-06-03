@@ -28,7 +28,6 @@ SOURCES += [
     'vsnprintf.c',
 ]
 
-#FINAL_LIBRARY = 'calbasecomps'
 FINAL_LIBRARY = 'calbscmp'
 
 LOCAL_INCLUDES += [
