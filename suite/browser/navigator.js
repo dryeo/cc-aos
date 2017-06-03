@@ -845,25 +845,20 @@ function GetTypePermFromId(aId)
   return [type, Components.interfaces.nsICookiePermission[perm]];
 }
 
-function CheckForVisibility(aEvent, aNode)
+function CheckForVisibility(aEvent)
 {
-  CheckPermissionsMenu("popup", aNode);
-  
   var uri = getBrowser().currentURI;
-  var allowBlocking = Services.prefs.getBoolPref("dom.disable_open_during_load");
+  var policy = Services.prefs.getBoolPref("dom.disable_open_during_load");
+  document.getElementById("ManagePopups").hidden = !policy;
 
-  // set enabled state for popup_ menu items.
-  var items = aEvent.target.getElementsByAttribute("name", "popup");
-  for (let item of items) {
-    if (allowBlocking)
-      item.removeAttribute("disabled");
-    else
-      item.setAttribute("disabled", "true");
-  }
+  var element = document.getElementById("AllowPopups");
+  if (policy && (Services.perms.testPermission(uri, "popup") != Services.perms.ALLOW_ACTION))
+    element.removeAttribute("disabled");
+  else
+    element.setAttribute("disabled", "true");
 
-  document.getElementById("popupMenuSeparator").hidden = !allowBlocking;
-  document.getElementById("menuitem_PopupsManage").hidden = !allowBlocking;
-
+  if (!/Mac/.test(navigator.platform))
+    popupBlockerMenuShowing(aEvent);
 }
 
 // Determine current state and check/uncheck the appropriate menu items.
@@ -871,15 +866,16 @@ function CheckPermissionsMenu(aType, aNode)
 {
   var currentPerm = Services.perms.testPermission(getBrowser().currentURI, aType);
   var items = aNode.getElementsByAttribute("name", aType);
-  for (let item of items) {
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
     // Get type and perm from id.
     var [type, perm] = GetTypePermFromId(item.id);
     item.setAttribute("checked", perm == currentPerm);
   }
 }
 
-// Perform a Cookie, Image or Popup action.
-function CookieImagePopupAction(aElement)
+// Perform a Cookie or Image action.
+function CookieImageAction(aElement)
 {
   var uri = getBrowser().currentURI;
   // Get type and perm from id.
@@ -892,6 +888,16 @@ function CookieImagePopupAction(aElement)
   Services.prompt.alert(window, aElement.getAttribute("title"),
                         aElement.getAttribute("msg"));
 }
+
+function popupHost()
+{
+  var hostPort = "";
+  try {
+    hostPort = getBrowser().currentURI.hostPort;
+  } catch (e) {}
+  return hostPort;
+}
+
 function OpenSessionHistoryIn(aWhere, aDelta, aTab)
 {
   var win = aWhere == "window" ? null : window;
@@ -1996,9 +2002,8 @@ function hiddenWindowStartup()
                        'View:PageSource', 'View:PageInfo', 'menu_translate',
                        'cookie_deny', 'cookie_default', 'View:FullScreen',
                        'cookie_session', 'cookie_allow', 'image_deny',
-                       'image_default', 'image_allow', 'popup_deny',
-                       'popup_default','popup_allow', 'menu_zoom',
-                       'cmd_minimizeWindow', 'cmd_zoomWindow'];
+                       'image_default', 'image_allow', 'AllowPopups',
+                       'menu_zoom', 'cmd_minimizeWindow', 'cmd_zoomWindow'];
   var broadcaster;
 
   for (var id in disabledItems) {
@@ -2385,10 +2390,17 @@ function UpdateStatusBarPopupIcon(aEvent)
     popupIcon.hidden = !gBrowser.getNotificationBox().popupCount;
   }
 }
+
 function StatusbarViewPopupManager()
 {
+  var hostPort = "";
+  try {
+    hostPort = getBrowser().selectedBrowser.currentURI.hostPort;
+  }
+  catch(ex) { }
+
   // Open Data Manager permissions pane site and type prefilled to add.
-  toDataManager(hostUrl() + "|permissions|add|popup");
+  toDataManager(hostPort + "|permissions|add|popup");
 }
 
 function popupBlockerMenuShowing(event)

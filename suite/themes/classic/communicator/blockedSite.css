@@ -11,11 +11,9 @@
   font-size: smaller;
 }
 
-/* the following ids refer to <span> elements defined in safeBrowsing.dtd */
+/* the following two ids refer to <span> elements defined in safeBrowsing.dtd */
 
 #malware_sitename,
-#phishing_sitename,
-#unwanted_sitename,
-#forbidden_sitename {
+#phishing_sitename {
   word-wrap: break-word;
 }
