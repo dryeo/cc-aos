@@ -18,9 +18,9 @@ initPage();
 function getErrorCode()
 {
   var url = document.documentURI;
-  var error = url.indexOf("e=");
-  var duffUrl = url.indexOf("&u=");
-  return url.slice(error + 2, duffUrl);
+  var error = url.search(/e\=/);
+  var duffUrl = url.search(/\&u\=/);
+  return decodeURIComponent(url.slice(error + 2, duffUrl));
 }
 
 function getURL()
@@ -41,6 +41,17 @@ function getURL()
   return url;
 }
 
+ /**
+  * Check whether this warning page should be overridable or whether
+  * the "ignore warning" button should be hidden.
+  */
+ function getOverride()
+ {
+   var url = document.documentURI;
+   var match = url.match(/&o=1&/);
+   return !!match;
+ }
+
 /**
  * Attempt to get the hostname via document.location.  Fail back
  * to getURL so that we always return something meaningful.
@@ -57,44 +68,81 @@ function getHostString()
 function initPage()
 {
   // Handoff to the appropriate initializer, based on error code
+  var error = "";
   switch (getErrorCode()) {
-    case "malwareBlocked":
-      initPage_malware();
+    case "malwareBlocked" :
+      error = "malware";
       break;
-    case "phishingBlocked":
-      initPage_phishing();
+    case "phishingBlocked" :
+      error = "phishing";
       break;
+    case "unwantedBlocked" :
+      error = "unwanted";
+      break;
+    case "forbiddenBlocked" :
+      error = "forbidden";
+      break;
+    default:
+      return;
+  }
+
+  var el;
+
+  if (error !== "malware") {
+    el = document.getElementById("errorTitleText_malware");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorShortDescText_malware");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorLongDescText_malware");
+    el.parentNode.removeChild(el);
+  }
+
+  if (error !== "phishing") {
+    el = document.getElementById("errorTitleText_phishing");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorShortDescText_phishing");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorLongDescText_phishing");
+    el.parentNode.removeChild(el);
+  }
+
+  if (error !== "unwanted") {
+    el = document.getElementById("errorTitleText_unwanted");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorShortDescText_unwanted");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorLongDescText_unwanted");
+    el.parentNode.removeChild(el);
+  }
+
+  if (error !== "forbidden") {
+    el = document.getElementById("errorTitleText_forbidden");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("errorShortDescText_forbidden");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("whyForbiddenButton");
+    el.parentNode.removeChild(el);
+  } else {
+    el = document.getElementById("ignoreWarningButton");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("reportButton");
+    el.parentNode.removeChild(el);
+
+    // Remove red style: A "forbidden site" does not warrant the same level
+    // of anxiety as a security concern.
+    document.documentElement.className = "";
+  }
+
+  // Set sitename
+  document.getElementById(error + "_sitename").textContent = getHostString();
+  document.title = document.getElementById("errorTitleText_" + error)
+                           .innerHTML;
+
+  if (!getOverride()) {
+    var btn = document.getElementById("ignoreWarningButton");
+    if (btn) {
+      btn.parentNode.removeChild(btn);
+    }
   }
 }
 
-/**
- * Initialize custom strings and functionality for blocked malware case
- */
-function initPage_malware()
-{
-  // Remove phishing strings
-  document.getElementById("errorTitleText_phishing").remove();
-  document.getElementById("errorShortDescText_phishing").remove();
-  document.getElementById("errorLongDescText_phishing").remove();
-
-  // Set sitename
-  document.getElementById("malware_sitename").textContent = getHostString();
-  document.title = document.getElementById("errorTitleText_malware")
-                           .textContent;
-}
-
-/**
- * Initialize custom strings and functionality for blocked phishing case
- */
-function initPage_phishing()
-{
-  // Remove malware strings
-  document.getElementById("errorTitleText_malware").remove();
-  document.getElementById("errorShortDescText_malware").remove();
-  document.getElementById("errorLongDescText_malware").remove();
-
-  // Set sitename
-  document.getElementById("phishing_sitename").textContent = getHostString();
-  document.title = document.getElementById("errorTitleText_phishing")
-                           .textContent;
-}

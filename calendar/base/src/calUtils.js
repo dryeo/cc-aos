@@ -305,7 +305,7 @@ function attendeeMatchesAddresses(anAttendee, addresses) {
     }
 
     attId = attId.toLowerCase().replace(/^mailto:/, "");
-    for each (let address in addresses) {
+    for (let address of addresses) {
         if (attId == address.toLowerCase().replace(/^mailto:/, "")) {
             return true;
         }
@@ -565,7 +565,7 @@ function setupDefaultCategories() {
 
     // Now, initialize the category default colors
     let categoryArray = categoriesStringToArray(categories);
-    for each (let category in categoryArray) {
+    for (let category of categoryArray) {
         let prefName = formatStringForCSSRule(category);
         Preferences.set("calendar.category.color." + prefName,
                         hashColor(category));
@@ -804,9 +804,11 @@ function doQueryInterface(aSelf, aProto, aIID, aList, aClassInfo) {
         }
     }
 
-    for each (var iid in aList) {
-        if (aIID.equals(iid)) {
-            return aSelf;
+    if (aList) {
+        for (var iid of aList) {
+            if (aIID.equals(iid)) {
+                return aSelf;
+            }
         }
     }
 
@@ -888,6 +890,15 @@ function setDefaultStartEndHour(aItem, aReferenceDate) {
 /****
  **** debug code
  ****/
+function _log(message, flag) {
+    let frame = Components.stack.caller.caller;
+    let filename = frame.filename ? frame.filename.split(" -> ").pop() : null;
+    let scriptError = Components.classes["@mozilla.org/scripterror;1"]
+                                .createInstance(Components.interfaces.nsIScriptError);
+    scriptError.init(message, filename, null, frame.lineNumber, frame.columnNumber,
+                     flag, "component javascript");
+    Services.console.logMessage(scriptError);
+}
 
 /**
  * Logs a string or an object to both stderr and the js-console only in the case
@@ -918,9 +929,8 @@ function LOG(aArg) {
         string = aArg;
     }
 
-    // xxx todo consider using function debug()
     dump(string + '\n');
-    Services.console.logStringMessage(string);
+    _log(string, Components.interfaces.nsIScriptError.infoFlag);
 }
 
 /**
@@ -930,14 +940,7 @@ function LOG(aArg) {
  */
 function WARN(aMessage) {
     dump("Warning: " + aMessage + '\n');
-    let frame = Components.stack.caller;
-    let filename = frame.filename ? frame.filename.split(" -> ").pop() : null;
-    let scriptError = Components.classes["@mozilla.org/scripterror;1"]
-                                .createInstance(Components.interfaces.nsIScriptError);
-    scriptError.init(aMessage, filename, null, frame.lineNumber, frame.columnNumber,
-                     Components.interfaces.nsIScriptError.warningFlag,
-                     "component javascript");
-    Services.console.logMessage(scriptError);
+    _log(aMessage, Components.interfaces.nsIScriptError.warningFlag);
 }
 
 /**
@@ -947,14 +950,7 @@ function WARN(aMessage) {
  */
 function ERROR(aMessage) {
     dump("Error: " + aMessage + '\n');
-    let frame = Components.stack.caller;
-    let filename = frame.filename ? frame.filename.split(" -> ").pop() : null;
-    let scriptError = Components.classes["@mozilla.org/scripterror;1"]
-                                .createInstance(Components.interfaces.nsIScriptError);
-    scriptError.init(aMessage, filename, null, frame.lineNumber, frame.columnNumber,
-                     Components.interfaces.nsIScriptError.errorFlag,
-                     "component javascript");
-    Services.console.logMessage(scriptError);
+    _log(aMessage, Components.interfaces.nsIScriptError.errorFlag);
 }
 
 /**
@@ -1597,15 +1593,17 @@ calPropertyBag.prototype = {
     get enumerator() {
         return new calPropertyBagEnumerator(this);
     },
-    __iterator__: function cpb_iterator(aWantKeys) {
-        return Iterator(this.mData, aWantKeys);
+    [Symbol.iterator]: function* cpb_iterator() {
+        for (let name of Object.keys(this.mData)) {
+            yield [name, this.mData[name]];
+        }
     }
 };
 // implementation part of calPropertyBag
 function calPropertyBagEnumerator(bag) {
     this.mIndex = 0;
     this.mBag = bag;
-    this.mKeys = [ key for (key in bag.mData) ];
+    this.mKeys = Object.keys(bag.mData);
 }
 calPropertyBagEnumerator.prototype = {
     mIndex: 0,
@@ -1689,7 +1687,7 @@ function compareItemContent(aFirstItem, aSecondItem, aIgnoreProps, aIgnoreParams
 
     function arr2hash(arr) {
         let hash = {};
-        for each (let x in arr) {
+        for (let x of arr) {
             hash[x] = true;
         }
         return hash;
@@ -1698,27 +1696,29 @@ function compareItemContent(aFirstItem, aSecondItem, aIgnoreProps, aIgnoreParams
     // This doesn't have to be super correct rfc5545, it just needs to be
     // in the same order
     function normalizeComponent(comp) {
-        let props = [
-            normalizeProperty(prop)
-            for (prop in cal.ical.propertyIterator(comp))
-            if (!(prop.propertyName in ignoreProps))
-        ].sort();
+        let props = [];
+        for (let prop in cal.ical.propertyIterator(comp)) {
+            if (!(prop.propertyName in ignoreProps)) {
+                props.push(normalizeProperty(prop));
+            }
+        }
+        props = props.sort();
 
-        let comps = [
-            normalizeComponent(subcomp)
-            for (subcomp in cal.ical.subcomponentIterator(comp))
-        ].sort();
+        let comps = [];
+        for (let subcomp in cal.ical.subcomponentIterator(comp)) {
+            comps.push(normalizeComponent(subcomp));
+        }
+        comps = comps.sort();
 
         return comp.componentType + props.join("\r\n") + comps.join("\r\n");
     }
 
     function normalizeProperty(prop) {
-        let params = [
-            k + "=" + v
-            for each ([k,v] in cal.ical.paramIterator(prop))
-            if (!(prop.propertyName in ignoreParams) ||
-            !(k in ignoreParams[prop.propertyName]))
-        ].sort();
+        let params = [...cal.ical.paramIterator(prop)].
+            filter(([k, v]) => !(prop.propertyName in ignoreParams) ||
+                   !(k in ignoreParams[prop.propertyName])).
+            map(([k, v]) => k + "=" + v).
+            sort();
 
         return prop.propertyName + ";" +
                params.join(";") + ":" +

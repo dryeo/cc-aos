@@ -5,14 +5,33 @@
 
 var gSafeBrowsing = {
   initMenuItems: function initMenuItems() {
-    // A phishing page will have a specific about:blocked content documentURI.
+    // A blocked page will have a specific about:blocked content documentURI.
     var docURI = content.document.documentURI;
-    var isPhishingPage = docURI.startsWith("about:blocked?e=phishingBlocked");
-    var isMalwarePage = docURI.startsWith("about:blocked?e=malwareBlocked");
+
+    // Reason isn't currently used but it may be useful in the future
+    // for further testing and setting menu items.
+    let reasonBlocked;
 
     // Show/hide the appropriate menu item.
-    document.getElementById("reportPhishing").hidden = isPhishingPage || isMalwarePage;
-    document.getElementById("reportPhishingError").hidden = !isPhishingPage;
+    // Initially allow report url and disallow reporting phishing error.
+    document.getElementById("reportPhishing").hidden = false;
+    document.getElementById("reportPhishingError").hidden = true;
+
+    if (docURI.startsWith("about:blocked")) {
+      // It's blocked so don't allow reporting again.
+      document.getElementById("reportPhishing").hidden = true;
+      // Test for blocked page.
+      if (/e=malwareBlocked/.test(docURI)) {
+        reasonBlocked = 'malware';
+      } else if (/e=unwantedBlocked/.test(docURI)) {
+        reasonBlocked = 'unwanted';
+      } else if (/e=phishingBlocked/.test(docURI)) {
+        reasonBlocked = 'phishing';
+        document.getElementById("reportPhishingError").hidden = false;
+      } else if (/e=forbiddenBlocked/.test(docURI)) {
+        reasonBlocked = 'forbidden';
+      }
+    }
 
     var broadcaster = document.getElementById("safeBrowsingBroadcaster");
     var uri = getBrowser().currentURI;

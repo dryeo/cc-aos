@@ -15,8 +15,6 @@
 #include "nsStringGlue.h"
 #include "nsCOMPtr.h"
 
-#define MIME_FORWARD_HTML_PREFIX "<HTML><BODY><BR><BR>"
-
 class nsStreamConverter : public nsIStreamConverter, public nsIMimeStreamConverter {
 public:
   nsStreamConverter();

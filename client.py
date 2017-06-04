@@ -18,18 +18,18 @@ DEFAULTS = {
     # URL of the default hg repository to clone for ChatZilla.
     'CHATZILLA_REPO': 'https://hg.mozilla.org/chatzilla/',
     # The stable revision to use
-    'CHATZILLA_REV':  'SEA2_42_RELBRANCH',
+    'CHATZILLA_REV':  'default',
 
     # URL of the default hg repository to clone for DOM Inspector.
     'INSPECTOR_REPO': 'https://hg.mozilla.org/dom-inspector/',
     # The stable revision to use
-      'INSPECTOR_REV':  'DOMI_2_0_16_GECKO_45',
+      'INSPECTOR_REV':  'default',
 
     # URL of the default hg repository to clone for Mozilla.
     'MOZILLA_REPO': 'https://hg.mozilla.org/releases/mozilla-esr45/',
 
     # Branch to use from the Mozilla repository.
-    'MOZILLA_REV': 'THUNDERBIRD_45_VERBRANCH',
+    'MOZILLA_REV': 'default',
 }
 
 REPO_SHORT_NAMES = {

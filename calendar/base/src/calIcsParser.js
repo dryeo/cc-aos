@@ -56,10 +56,11 @@ calIcsParser.prototype = {
 
         while (calComp) {
             // Get unknown properties from the VCALENDAR
-            this.mProperties = this.mProperties.concat(
-                [ prop for (prop in cal.ical.propertyIterator(calComp))
-                        if (prop.propertyName != "VERSION" &&
-                            prop.propertyName != "PRODID") ]);
+            for (let prop in cal.ical.propertyIterator(calComp)) {
+                if (prop.propertyName != "VERSION" && prop.propertyName != "PRODID") {
+                    this.mProperties.push(prop);
+                }
+            }
 
             for (let subComp in cal.ical.subcomponentIterator(calComp)) {
                 state.submit(subComp);
@@ -70,7 +71,7 @@ calIcsParser.prototype = {
         state.join(function() {
             let fakedParents = {};
             // tag "exceptions", i.e. items with rid:
-            for each (let item in state.excItems) {
+            for (let item of state.excItems) {
                 let parent = state.uid2parent[item.id];
 
                 if (!parent) { // a parentless one, fake a master and override it's occurrence

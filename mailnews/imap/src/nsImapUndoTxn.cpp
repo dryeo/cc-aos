@@ -48,6 +48,7 @@ nsImapMoveCopyMsgTxn::Init(nsIMsgFolder* srcFolder, nsTArray<nsMsgKey>* srcKeyAr
 
   for (i = 0; i < count; i++)
   {
+    nsMsgKey pseudoKey;
     rv = srcDB->GetMsgHdrForKey(m_srcKeyArray[i],
       getter_AddRefs(srcHdr));
     if (NS_SUCCEEDED(rv))
@@ -62,15 +63,13 @@ nsImapMoveCopyMsgTxn::Init(nsIMsgFolder* srcFolder, nsTArray<nsMsgKey>* srcKeyAr
           m_srcSizeArray.AppendElement(msgSize);
         if (isMove)
         {
-          rv = srcDB->CopyHdrFromExistingHdr(nsMsgKey_None, srcHdr, false,
-                                             getter_AddRefs(copySrcHdr));
-          nsMsgKey pseudoKey = nsMsgKey_None;
-          if (NS_SUCCEEDED(rv))
-          {
-            copySrcHdr->GetMessageKey(&pseudoKey);
-            m_srcHdrs.AppendObject(copySrcHdr);
-          }
+          srcDB->GetNextPseudoMsgKey(&pseudoKey);
+          pseudoKey--;
           m_dupKeyArray[i] = pseudoKey;
+          rv = srcDB->CopyHdrFromExistingHdr(pseudoKey, srcHdr, false,
+                                             getter_AddRefs(copySrcHdr));
+          if (NS_SUCCEEDED(rv)) 
+            m_srcHdrs.AppendObject(copySrcHdr);
         }
       }
       srcHdr->GetMessageId(getter_Copies(messageId));
@@ -502,30 +501,14 @@ nsImapOfflineTxn::nsImapOfflineTxn(nsIMsgFolder* srcFolder, nsTArray<nsMsgKey>* 
     {
       nsMsgKey pseudoKey;
       nsCOMPtr <nsIMsgDBHdr> copySrcHdr;
-
-      // Imap protocols have conflated key/UUID so we cannot use
-      // auto key with them.
-      nsCString protocolType;
-      srcFolder->GetURI(protocolType);
-      protocolType.SetLength(protocolType.FindChar(':'));
       for (int32_t i = 0; i < srcHdrs.Count(); i++)
       {
-        if (protocolType.EqualsLiteral("imap"))
-        {
-          srcDB->GetNextPseudoMsgKey(&pseudoKey);
-          pseudoKey--;
-        }
-        else
-        {
-          pseudoKey = nsMsgKey_None;
-        }
+        srcDB->GetNextPseudoMsgKey(&pseudoKey);
+        pseudoKey--;
+        m_dupKeyArray[i] = pseudoKey;
         rv = srcDB->CopyHdrFromExistingHdr(pseudoKey, srcHdrs[i], false, getter_AddRefs(copySrcHdr));
         if (NS_SUCCEEDED(rv))
-        {
-          copySrcHdr->GetMessageKey(&pseudoKey);
           m_srcHdrs.AppendObject(copySrcHdr);
-        }
-        m_dupKeyArray[i] = pseudoKey;
       }
     }
   }

@@ -37,7 +37,6 @@ public:
                             nsIOutputStream *outputStream,
                             nsISeekableStream *seekableStream,
                             nsIInputStream *inputStream);
-  static void ResetForceReparse(nsIMsgDatabase *aMsgDB);
 
   nsresult UpdateFolderFlag(nsIMsgDBHdr *mailHdr, bool bSet,
                             nsMsgMessageFlagType flag,

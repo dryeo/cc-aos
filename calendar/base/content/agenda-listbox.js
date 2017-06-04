@@ -68,7 +68,7 @@ function uninit() {
         this.calendar.removeObserver(this.calendarObserver);
     }
 
-    for each (var period in this.periods) {
+    for (var period of this.periods) {
         if (period.listItem) {
             period.listItem.getCheckbox()
                   .removeEventListener("CheckboxStateChange",
@@ -515,8 +515,8 @@ function deleteItem(aItem, aMoveSelection) {
  */
 agendaListbox.deleteItemsFromCalendar =
 function deleteItemsFromCalendar(aCalendar) {
-    let childNodes = Array.slice(this.agendaListboxControl.childNodes);
-    for each (let childNode in childNodes) {
+    let childNodes = Array.from(this.agendaListboxControl.childNodes);
+    for (let childNode of childNodes) {
         if (childNode && childNode.occurrence
             && childNode.occurrence.calendar.id == aCalendar.id) {
             childNode.remove();
@@ -1038,15 +1038,17 @@ agendaListbox.calendarObserver.onDefaultCalendarChanged = function(aCalendar) {
 };
 
 /**
- * Updates the "Soon" section of today pane when preference soondays changes
+ * Updates the "Upcoming" section of today pane when preference soondays changes
  **/
 agendaListbox.updateSoonSection =
 function updateSoonSection() {
-    let soonHeader = document.getElementById("nextweek-header");
     this.soon.duration = this.soonDays;
     this.soon.open = true;
-    soonHeader.setItem(this.soon, true);
-    agendaListbox.refreshPeriodDates(now());
+    let soonHeader = document.getElementById("nextweek-header");
+    if (soonHeader) {
+        soonHeader.setItem(this.soon, true);
+        agendaListbox.refreshPeriodDates(now());
+    }
 }
 
 /**

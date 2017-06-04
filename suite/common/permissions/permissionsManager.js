@@ -53,18 +53,25 @@ function Startup() {
 
   sortAscending = (permissionsTree.getAttribute("sortAscending") == "true");
   sortColumn = permissionsTree.getAttribute("sortColumn");
+  
+  var params = { blockVisible   : true,
+                 sessionVisible : true,
+                 allowVisible   : true,
+                 manageCapability : true
+               };
 
   if (window.arguments && window.arguments[0]) {
-    var params = window.arguments[0];
-    document.getElementById("btnBlock").hidden = !params.blockVisible;
-    document.getElementById("btnSession").hidden = !params.sessionVisible;
-    document.getElementById("btnAllow").hidden = !params.allowVisible;
+    params = window.arguments[0];
     setHost(params.prefilledHost);
     permissionType = params.permissionType;
     gManageCapability = params.manageCapability;
     introText = params.introText;
     windowTitle = params.windowTitle;
   }
+
+  document.getElementById("btnBlock").hidden = !params.blockVisible;
+  document.getElementById("btnSession").hidden = !params.sessionVisible;
+  document.getElementById("btnAllow").hidden = !params.allowVisible;
 
   document.getElementById("permissionsText").textContent = introText ||
       permissionsBundle.getString(permissionType + "permissionstext");
@@ -99,8 +106,9 @@ function setHost(aHost) {
   document.getElementById("url").value = aHost;
 }
 
-function Permission(id, host, rawHost, type, capability, perm) {
+function Permission(id, principal, host, rawHost, type, capability, perm) {
   this.id = id;
+  this.principal = principal;
   this.host = host;
   this.rawHost = rawHost;
   this.type = type;
@@ -136,7 +144,7 @@ function loadPermissions() {
       permission = enumerator.getNext().QueryInterface(Components.interfaces.nsIPermission);
       if (permission.type == permissionType &&
           (!gManageCapability || permission.capability == gManageCapability))
-        permissionPush(count++, permission.host, permission.type,
+        permissionPush(count++, permission.principal, permission.principal.URI.host, permission.type,
                        capabilityString(permission.capability), permission.capability);
     }
   } catch(ex) {
@@ -171,9 +179,9 @@ function capabilityString(aCapability) {
   return permissionsBundle.getString(capability);
 }
 
-function permissionPush(aId, aHost, aType, aString, aCapability) {
-  var rawHost = (aHost.charAt(0) == ".") ? aHost.substring(1, aHost.length) : aHost;
-  var p = new Permission(aId, aHost, rawHost, aType, aString, aCapability);
+function permissionPush(aId, aPrincipal, aHost, aType, aString, aCapability) {
+  var rawHost = aHost.replace(/^\./, "");
+  var p = new Permission(aId, aPrincipal, aHost, rawHost, aType, aString, aCapability);
   additions.push(p);
 }
 
@@ -207,9 +215,11 @@ function finalizeChanges() {
   var i, p;
 
   for (i in removals) {
-    p = removals[i];
     try {
-      permissionManager.remove(p.host, p.type);
+      // principal is not null so not a permission we just added in this session
+      if (removals[i].principal) {
+        permissionManager.removeFromPrincipal(removals[i].principal, removals[i].type);
+      }
     } catch(ex) {
     }
   }
@@ -267,7 +277,7 @@ function addPermission(aPermission) {
   }
 
   if (!exists) {
-    permissionPush(additions.length, host, permissionType, stringCapability, aPermission);
+    permissionPush(additions.length, null, host, permissionType, stringCapability, aPermission);
 
     permissionsTreeView.rowCount = additions.length;
     permissionsTree.treeBoxObject.rowCountChanged(additions.length - 1, 1);

@@ -211,7 +211,6 @@ NS_IMETHODIMP nsMsgThread::AddChild(nsIMsgDBHdr *child, nsIMsgDBHdr *inReplyTo, 
   bool parentKeyNeedsSetting = true;
 
   nsIMdbRow *hdrRow = hdr->GetMDBRow();
-  NS_ENSURE_STATE(hdrRow);
   hdr->GetRawFlags(&newHdrFlags);
   hdr->GetMessageKey(&newHdrKey);
   hdr->GetDateInSeconds(&msgDate);

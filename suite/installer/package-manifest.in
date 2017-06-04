@@ -354,6 +354,7 @@
 @RESPATH@/components/url-classifier.xpt
 #endif
 @RESPATH@/components/urlformatter.xpt
+
 @RESPATH@/components/webBrowser_core.xpt
 @RESPATH@/components/webbrowserpersist.xpt
 @RESPATH@/components/webvtt.xpt
@@ -705,18 +706,6 @@
 @RESPATH@/res/table-remove-row-active.gif
 @RESPATH@/res/table-remove-row-hover.gif
 @RESPATH@/res/table-remove-row.gif
-@RESPATH@/res/text_caret.png
-@RESPATH@/res/text_caret@1.5x.png
-@RESPATH@/res/text_caret@2.25x.png
-@RESPATH@/res/text_caret@2x.png
-@RESPATH@/res/text_caret_tilt_left.png
-@RESPATH@/res/text_caret_tilt_left@1.5x.png
-@RESPATH@/res/text_caret_tilt_left@2.25x.png
-@RESPATH@/res/text_caret_tilt_left@2x.png
-@RESPATH@/res/text_caret_tilt_right.png
-@RESPATH@/res/text_caret_tilt_right@1.5x.png
-@RESPATH@/res/text_caret_tilt_right@2.25x.png
-@RESPATH@/res/text_caret_tilt_right@2x.png
 @RESPATH@/res/ImageDocument.css
 @RESPATH@/res/TopLevelImageDocument.css
 @RESPATH@/res/TopLevelVideoDocument.css
@@ -1010,5 +999,14 @@ bin/libfreebl_32int64_3.so
 @RESPATH@/extensions/debugQA@mozilla.org/install.rdf
 @RESPATH@/extensions/debugQA@mozilla.org/chrome.manifest
 @RESPATH@/extensions/debugQA@mozilla.org/chrome/debugqa@JAREXT@
+#endif
+#endif
+
+#ifdef MOZ_CALENDAR
+[calendar]
+#ifdef NIGHTLY_BUILD
+@RESPATH@/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/
+#else
+@RESPATH@/distribution/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/
 #endif
 #endif

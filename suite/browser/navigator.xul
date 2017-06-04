@@ -510,7 +510,7 @@
       <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0"/>
     </statusbarpanel>
     <statusbarpanel id="popupIcon" class="statusbarpanel-iconic" hidden="true"
-                    oncommand="StatusbarViewPopupManager()"
+                    oncommand="toDataManager(hostUrl() + '|permissions|add|popup')"
                     tooltiptext="&popupIcon.tooltiptext;"
                     context="popupBlockerMenu"/>
     <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>

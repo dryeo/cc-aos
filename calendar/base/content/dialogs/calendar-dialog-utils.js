@@ -154,7 +154,7 @@ function updateReminderDetails() {
     let calendar = getCurrentCalendar();
     let actionValues = calendar.getProperty("capabilities.alarms.actionValues") || ["DISPLAY"];
     let actionMap = {};
-    for each (var action in actionValues) {
+    for (var action of actionValues) {
         actionMap[action] = true;
     }
 
@@ -222,7 +222,7 @@ function matchCustomReminderToMenuitem(reminder) {
           minutes: 60
         };
 
-        for each (let menuitem in Array.slice(reminderPopup.childNodes)) {
+        for (let menuitem of reminderPopup.childNodes) {
             if (menuitem.localName == "menuitem" &&
                 menuitem.hasAttribute("length") &&
                 menuitem.getAttribute("origin") == origin &&
@@ -282,7 +282,7 @@ function saveReminder(item) {
     // We want to compare the old alarms with the new ones. If these are not
     // the same, then clear the snooze/dismiss times
     let oldAlarmMap = {};
-    for each (let alarm in item.getAlarms({})) {
+    for (let alarm of item.getAlarms({})) {
         oldAlarmMap[alarm.icalString] = true;
     }
 
@@ -310,7 +310,7 @@ function saveReminder(item) {
         let alarmCaps = item.calendar.getProperty("capabilities.alarms.actionValues") ||
                         ["DISPLAY"];
         let alarmActions = {};
-        for each (let action in alarmCaps) {
+        for (let action of alarmCaps) {
             alarmActions[action] = true;
         }
 
@@ -320,7 +320,7 @@ function saveReminder(item) {
     }
 
     // Compare alarms to see if something changed.
-    for each (let alarm in item.getAlarms({})) {
+    for (let alarm of item.getAlarms({})) {
         let ics = alarm.icalString;
         if (ics in oldAlarmMap) {
             // The new alarm is also in the old set, remember this
@@ -336,16 +336,16 @@ function saveReminder(item) {
     // If the alarms differ, clear the snooze/dismiss properties
     if (Object.keys(oldAlarmMap).length > 0) {
         let cmp = "X-MOZ-SNOOZE-TIME";
-        let cmpLength = cmp.length;
 
         // Recurring item alarms potentially have more snooze props, remove them
         // all.
         let propIterator = fixIterator(item.propertyEnumerator, Components.interfaces.nsIProperty);
-        let propsToDelete = [
-            prop.name
-            for (prop in propIterator)
-            if (prop.name.substr(0, cmpLength) == cmp)
-        ];
+        let propsToDelete = [];
+        for (let prop in propIterator) {
+            if (prop.name.startsWith(cmp)) {
+                propsToDelete.push(prop.name);
+            }
+        }
 
         item.alarmLastAck = null;
         propsToDelete.forEach(item.deleteProperty, item);

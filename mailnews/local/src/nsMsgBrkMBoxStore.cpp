@@ -798,6 +798,7 @@ NS_IMETHODIMP nsMsgBrkMBoxStore::RebuildIndex(nsIMsgFolder *aFolder,
                                               nsIUrlListener *aListener)
 {
   NS_ENSURE_ARG_POINTER(aFolder);
+  // We don't use aMsgDB, but I think nsMsgMailDirStore needs it.
   nsCOMPtr<nsIFile> pathFile;
   nsresult rv = aFolder->GetFilePath(getter_AddRefs(pathFile));
   if (NS_FAILED(rv))
@@ -820,11 +821,8 @@ NS_IMETHODIMP nsMsgBrkMBoxStore::RebuildIndex(nsIMsgFolder *aFolder,
   rv = parser->Init();
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = mailboxService->ParseMailbox(aMsgWindow, pathFile, parser, aListener,
-                                    nullptr);
-  if (NS_SUCCEEDED(rv))
-    ResetForceReparse(aMsgDB);
-  return rv;
+  return mailboxService->ParseMailbox(aMsgWindow, pathFile, parser, aListener,
+                                      nullptr);
 }
 
 nsresult

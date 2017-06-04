@@ -937,12 +937,8 @@ nsresult nsParseMailMessageState::ParseHeaders ()
   char *buf = m_headers.GetBuffer();
   uint32_t buf_length = m_headers.GetBufferPos();
   char *buf_end = buf + buf_length;
-  if (!(buf_length > 1 && (buf[buf_length - 1] == '\r' ||
-        buf[buf_length - 1] == '\n')))
-  {
-    NS_WARNING("Header text should always end in a newline");
-    return NS_ERROR_UNEXPECTED;
-  }
+  MOZ_ASSERT(buf_length > 1 && (buf[buf_length - 1] == '\r' ||
+    buf[buf_length - 1] == '\n'), "Header text should always end in a newline");
   while (buf < buf_end)
   {
     char *colon = PL_strnchr(buf, ':', buf_end - buf);

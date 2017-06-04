@@ -53,6 +53,12 @@ function MigrateServerAuthPref()
       let serverKey = Services.prefs.getCharPref("mail.account." + accountKey +
          ".server");
       let server = "mail.server." + serverKey + ".";
+
+      // Delete .valid pref because it is a leftover fragment from a previous session.
+      try {
+        Services.prefs.clearUserPref(server + "valid");
+      } catch (e) {}
+
       if (Services.prefs.prefHasUserValue(server + "authMethod"))
         continue;
       if (!Services.prefs.prefHasUserValue(server + "useSecAuth") &&

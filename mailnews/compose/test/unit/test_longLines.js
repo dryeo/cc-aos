@@ -82,7 +82,7 @@ let longMultibyteLine = "\u00E1".repeat(600);
 let longMultibyteLineCJK = "안".repeat(400);
 
 // And some Japanese.
-let longMultibyteLineJapanese = "語".repeat(450);
+let longMultibyteLineJapanese = "語".repeat(400);
 
 function* testBodyWithLongLine() {
   let newline;

@@ -7,11 +7,11 @@ Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource://gre/modules/DownloadTaskbarProgress.jsm");
 Components.utils.import("resource:///modules/WindowsPreviewPerTab.jsm");
 
-__defineGetter__("PluralForm", function() {
+this.__defineGetter__("PluralForm", function() {
   Components.utils.import("resource://gre/modules/PluralForm.jsm");
   return this.PluralForm;
 });
-__defineSetter__("PluralForm", function (val) {
+this.__defineSetter__("PluralForm", function (val) {
   delete this.PluralForm;
   return this.PluralForm = val;
 });
@@ -848,17 +848,22 @@ function GetTypePermFromId(aId)
 function CheckForVisibility(aEvent)
 {
   var uri = getBrowser().currentURI;
-  var policy = Services.prefs.getBoolPref("dom.disable_open_during_load");
-  document.getElementById("ManagePopups").hidden = !policy;
+  var allowBlocking = Services.prefs.getBoolPref("dom.disable_open_during_load");
 
-  var element = document.getElementById("AllowPopups");
-  if (policy && (Services.perms.testPermission(uri, "popup") != Services.perms.ALLOW_ACTION))
-    element.removeAttribute("disabled");
-  else
-    element.setAttribute("disabled", "true");
+  if (allowBlocking) {
+    document.getElementById("popup_deny").removeAttribute("disabled");
+    document.getElementById("popup_default").removeAttribute("disabled");
+    document.getElementById("popup_allow").removeAttribute("disabled");
+  }
+  else {
+    document.getElementById("popup_deny").setAttribute("disabled", "true");
+    document.getElementById("popup_default").setAttribute("disabled", "true");
+    document.getElementById("popup_allow").setAttribute("disabled", "true");
+  }
 
-  if (!/Mac/.test(navigator.platform))
-    popupBlockerMenuShowing(aEvent);
+  document.getElementById("popupMenuSeparator").hidden = !allowBlocking;
+  document.getElementById("ManagePopups").hidden = !allowBlocking;
+
 }
 
 // Determine current state and check/uncheck the appropriate menu items.
@@ -874,8 +879,8 @@ function CheckPermissionsMenu(aType, aNode)
   }
 }
 
-// Perform a Cookie or Image action.
-function CookieImageAction(aElement)
+// Perform a Cookie, Image or Popup action.
+function CookieImagePopupAction(aElement)
 {
   var uri = getBrowser().currentURI;
   // Get type and perm from id.
@@ -888,14 +893,13 @@ function CookieImageAction(aElement)
   Services.prompt.alert(window, aElement.getAttribute("title"),
                         aElement.getAttribute("msg"));
 }
-
-function popupHost()
+function hostUrl()
 {
-  var hostPort = "";
+  var url = "";
   try {
-    hostPort = getBrowser().currentURI.hostPort;
+    url = getBrowser().currentURI.scheme + "://" + getBrowser().currentURI.hostPort;
   } catch (e) {}
-  return hostPort;
+  return url;
 }
 
 function OpenSessionHistoryIn(aWhere, aDelta, aTab)
@@ -1615,7 +1619,7 @@ function BrowserTryToCloseWindow()
     BrowserCloseWindow();
 }
 
-function BrowserCloseWindow() 
+function BrowserCloseWindow()
 {
   // This code replicates stuff in Shutdown().  It is here because
   // window.screenX and window.screenY have real values.  We need
@@ -2002,8 +2006,9 @@ function hiddenWindowStartup()
                        'View:PageSource', 'View:PageInfo', 'menu_translate',
                        'cookie_deny', 'cookie_default', 'View:FullScreen',
                        'cookie_session', 'cookie_allow', 'image_deny',
-                       'image_default', 'image_allow', 'AllowPopups',
-                       'menu_zoom', 'cmd_minimizeWindow', 'cmd_zoomWindow'];
+                       'image_default', 'image_allow', 'popup_deny',
+                       'popup_default','popup_allow', 'menu_zoom',
+                       'cmd_minimizeWindow', 'cmd_zoomWindow'];
   var broadcaster;
 
   for (var id in disabledItems) {
@@ -2391,18 +2396,6 @@ function UpdateStatusBarPopupIcon(aEvent)
   }
 }
 
-function StatusbarViewPopupManager()
-{
-  var hostPort = "";
-  try {
-    hostPort = getBrowser().selectedBrowser.currentURI.hostPort;
-  }
-  catch(ex) { }
-
-  // Open Data Manager permissions pane site and type prefilled to add.
-  toDataManager(hostPort + "|permissions|add|popup");
-}
-
 function popupBlockerMenuShowing(event)
 {
   var separator = document.getElementById("popupMenuSeparator");
@@ -2623,7 +2616,7 @@ function convertFromUnicode(charset, str)
     str = unicodeConverter.ConvertFromUnicode(str);
     return str + unicodeConverter.Finish();
   } catch(ex) {
-    return null; 
+    return null;
   }
 }
 

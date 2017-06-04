@@ -122,17 +122,25 @@
 <!ENTITY cookieBlockImagesCmd.accesskey "B">
 <!ENTITY cookieBlockImagesMsg.label "Images from this website will never be downloaded.">
 
-<!ENTITY cookieAllowPopupsCmd.label "Allow Popups from This Website">
-<!ENTITY cookieAllowPopupsCmd.accesskey "A">
+<!ENTITY cookiePopupsMessageTitle.label "Popups Permissions Changed">
 <!ENTITY cookieManagePopups.label "Manage Popups">
 <!ENTITY cookieManagePopups.accesskey "M">
+<!ENTITY cookieAllowPopupsCmd.label "Allow Popups from This Website">
+<!ENTITY cookieAllowPopupsCmd.accesskey "A">
+<!ENTITY cookieAllowPopupsMsg.label "Popups from this website will always be shown.">
+<!ENTITY cookiePopupsDefaultCmd.label "Use Default Popups Permissions">
+<!ENTITY cookiePopupsDefaultCmd.accesskey "U">
+<!ENTITY cookiePopupsDefaultMsg.label "Popups from this website will be shown based on default settings.">
+<!ENTITY cookieBlockPopupsCmd.label "Block Popups from This Website">
+<!ENTITY cookieBlockPopupsCmd.accesskey "B">
+<!ENTITY cookieBlockPopupsMsg.label "Popups from this website will not be shown.">
 
 <!ENTITY cookieCookieManager.label "Cookie Manager">
 <!ENTITY cookieCookieManager.accesskey "C">
 <!ENTITY cookieImageManager.label "Image Manager">
 <!ENTITY cookieImageManager.accesskey "I">
-<!ENTITY cookiePopupManager.label "Popup Manager">
-<!ENTITY cookiePopupManager.accesskey "o">
+<!ENTITY cookiePopupsManager.label "Popup Manager">
+<!ENTITY cookiePopupsManager.accesskey "o">
 
 <!ENTITY clearPrivateDataCmd.label "Clear Private Data…">
 <!ENTITY clearPrivateDataCmd.accesskey "e">

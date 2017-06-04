@@ -77,9 +77,7 @@ nsresult nsMsgI18NConvertFromUnicode(const char* aCharset,
   int32_t originalUnicharLength = inString.Length();
   int32_t srcLength;
   int32_t dstLength;
-  char localbuf[512+10]; // We have seen cases were the buffer was overrun
-                         // by two (!!) bytes (Bug 1255863).
-                         // So give it ten bytes more for now to avoid a crash.
+  char localbuf[512];
   int32_t consumedLen = 0;
 
   bool mappingFailure = false;
@@ -89,13 +87,6 @@ nsresult nsMsgI18NConvertFromUnicode(const char* aCharset,
     srcLength = originalUnicharLength - consumedLen;  
     dstLength = 512;
     rv = encoder->Convert(currentSrcPtr, &srcLength, localbuf, &dstLength);
-#ifdef DEBUG
-    if (dstLength > 512) {
-      char warning[100];
-      sprintf(warning, "encoder->Convert() returned %d bytes. Limit = 512", dstLength);
-      NS_WARNING(warning);
-    }
-#endif
     if (rv == NS_ERROR_UENC_NOMAPPING) {
       mappingFailure = true;
     }
@@ -106,11 +97,9 @@ nsresult nsMsgI18NConvertFromUnicode(const char* aCharset,
     currentSrcPtr += srcLength;
     consumedLen = currentSrcPtr - originalSrcPtr; // src length used so far
   }
-  dstLength = 512; // Reset available buffer size.
   rv = encoder->Finish(localbuf, &dstLength);
   if (NS_SUCCEEDED(rv)) {
-    if (dstLength)
-      outString.Append(localbuf, dstLength);
+    outString.Append(localbuf, dstLength);
     return !mappingFailure ? rv: NS_ERROR_UENC_NOMAPPING;
   }
   return rv;

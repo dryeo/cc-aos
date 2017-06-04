@@ -221,15 +221,23 @@ calTimezoneService.prototype = {
     },
 
     get timezoneIds() {
-        return new calStringEnumerator([
-            k for ([k, v] of this.mZones.entries()) if (!v.aliasTo && k != "UTC" && k != "floating")
-        ]);
+        let zones = [];
+        for (let [k, v] of this.mZones.entries()) {
+            if (!v.aliasTo && k != "UTC" && k != "floating") {
+                zones.push(k);
+            }
+        }
+        return new calStringEnumerator(zones);
     },
 
     get aliasIds() {
-        return new calStringEnumerator([
-            k for ([k, v] of this.mZones.entries()) if (v.aliasTo && k != "UTC" && k != "floating")
-        ]);
+        let zones = [];
+        for (let [k, v] of this.mZones.entries()) {
+            if (v.aliasTo && k != "UTC" && k != "floating") {
+                zones.push(k);
+            }
+        }
+        return new calStringEnumerator(zones);
     },
 
     get version() {
@@ -696,7 +704,7 @@ function guessSystemTimezone() {
         const bundleTZString =
             calProperties.GetStringFromName("likelyTimezone");
         const bundleTZIds = bundleTZString.split(/\s*,\s*/);
-        for each (var bareTZId in bundleTZIds) {
+        for (var bareTZId of bundleTZIds) {
             var tzId = bareTZId;
             try {
                 var score = checkTZ(tzId);
