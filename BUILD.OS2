@@ -1,26 +1,37 @@
 OS/2 port of SeaMonkey and Thunderbird based on the 31ESR branch of gecko as ported by Bitwise, at git://github.com/bitwiseworks/mozilla-os2.git.
 Getting the tree together:
-Clone this repositry, perhaps to /cc-31 (or whatever directory structure you wish for the top layer, default is dry-comm-esr31)
-hg clone https://dryeo@bitbucket.org/dryeo/dry-comm-esr31 /cc-31
-from cc-31 clone the bitwise repositry into mozilla,
+Clone this repositry, perhaps to /cc-esr (or whatever directory structure you wish for the top layer, default is dry-comm-esr31)
+hg clone https://dryeo@bitbucket.org/dryeo/dry-comm-esr31 /cc-esr
+from cc-esr clone the bitwise repositry into mozilla,
 git clone https://github.com/bitwiseworks/mozilla-os2.git mozilla/
 Checkout the rest of the repositries using /cc-31/client.py being careful not to overwrite the bitwise mozilla repositry,
 python client.py --skip-mozilla checkout
-Apply patches to /cc-31/ldap/sdks,
-Unzip ldap_patches under /cc-31/ldap/sdks/.hg. Cd to /cc-31/ldap/sdks
-and do hg qpush -a
 Building:
 Currently the supported build environment is installed by RPM/YUM.
 See https://github.com/bitwiseworks/mozilla-os2/issues/82 for help in setting up your environement.
+The currently needed packages are
+
+nasm gcc gcc-wlink gcc-wrc kbuild-make m4 grep gawk perl python findutils tar pkgconfig perl-PathTools pthread-devel
+exceptq exceptq-devel autoconf213 autoconf nspr-devel nss-devel libicu-devel pixman-devel cairo-devel pango-devel
+fontconfig-devel freetype-devel libkai-devel libvpx-devel libjpeg-turbo-devel libpng-devel zlib-devel bzip2-devel
+hunspell-devel libcx-devel expat-devel python-test ffmpeg-devel libtool libtool-ltdl-devel gettext-devel
+git
+mercurial
+
+Copy and paste using "yum install" or ANPM's quick install.
 You need to set MOZCONFIG=your_mozconfig_file, I've included the ones I use,
-set MOZCONFIG=/cc-31/suite/os2/mozconfig
+set MOZCONFIG=/cc-esr/suite/os2/mozconfig
 for SeaMonkey or for Thunderbird,
-set MOZCONFIG=/cc-31/mail/os2/mozconfig
+set MOZCONFIG=/cc-esr/mail/os2/mozconfig
 Then in the source directory execute
 make -f client.mk
 or better, with logging
 make -f client.mk 2>&1 | tee build.log
+Alternatively you can use Mach, "python mozilla/mach build" or for logging "python mozilla/mach -l name_of.log build"
+Use the included smxqs.cmd or tbxqs.cmd files to create the xqs files (the cmd files may need editing to match your environment, see the top of the files)
 When the build finishes, cd into your object directory and execute
 make package
 You will have under your object directory mozilla/dist/ containing the zip file and also you can run the executable from $OBJDIR/mozilla/dist/bin.
 Lightning and other extensions will be found as xpi files under $OBJDIR/mozilla/dist/xpi-stage.
+
+Thanks to Laurenz Sommer for help with the current build environment.
