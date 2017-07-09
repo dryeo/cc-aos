@@ -1,0 +1,32 @@
+# This file specifies the build flags for Thunderbird.  You can use it by adding
+#  . $topsrcdir/mail/config/mozconfig
+# to the top of your mozconfig file.
+
+# Make sure you edit these for your environment
+
+mk_add_options MOZ_CO_PROJECT=mail
+mk_add_options MOZ_OBJDIR=c:/work/cc45esr/obj-tbird
+mk_add_options AUTOCONF=/usr/bin/autoconf213
+mk_add_options MOZ_MAKE_FLAGS="-j3"
+
+ac_add_options --enable-application=mail
+ac_add_options --disable-tests
+ac_add_options --disable-debug
+#ac_options --enable-debug
+#ac_add_options --disable-debug-symbols
+ac_add_options --enable-optimize="-mtune=generic -march=i686 -Os -Zno-fork"
+ac_add_options --enable-os2-high-mem
+ac_add_options --enable-calendar
+#ac_add_options --enable-shared-js
+#ac_add_options --enable-official-branding
+ac_add_options --with-intl-api
+ac_add_options --with-system-icu
+ac_add_options --enable-system-cairo
+ac_add_options --enable-system-pixman
+ac_add_options --with-system-zlib
+ac_add_options --with-system-nss
+ac_add_options --with-system-nspr
+ac_add_options --with-system-libvpx
+
+# Needed to enable breakpad in application.ini
+export MOZILLA_OFFICIAL=1
