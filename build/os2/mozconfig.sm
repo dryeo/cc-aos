@@ -18,6 +18,15 @@ ac_add_options --disable-debug
 #ac_add_options --enable-debug
 #ac_add_options --disable-debug-symbols
 ac_add_options --enable-application=suite
+
+# Disable checking that add-ons are signed by the trusted root
+MOZ_ADDON_SIGNING=0
+# Disable enforcing that add-ons are signed by the trusted root
+MOZ_REQUIRE_ADDON_SIGNING=0
+
+# Package js shell
+export MOZ_PACKAGE_JSSHELL=1
+
 ac_add_options --enable-system-cairo
 ac_add_options --enable-system-pixman
 ac_add_options --enable-os2-high-mem
