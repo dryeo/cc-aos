@@ -19,10 +19,17 @@ git
 mercurial
 
 Copy and paste using "yum install" or ANPM's quick install.
+
+For autoconf run sh.exe in the directory \cc-esr\mozilla\ and execute the following:
+autoconf213
+(cd js/src && autoconf213)
+(cd js/src/ctypes/libffi && autoreconf -fi)
+(cd nsprpub && autoconf)
+
 You need to set MOZCONFIG=your_mozconfig_file, I've included the ones I use,
-set MOZCONFIG=/cc-esr/suite/os2/mozconfig
+set MOZCONFIG=/cc-esr/build/os2/mozconfig.sm
 for SeaMonkey or for Thunderbird,
-set MOZCONFIG=/cc-esr/mail/os2/mozconfig
+set MOZCONFIG=/cc-esr/build/os2/mozconfig.tb
 Then in the source directory execute
 make -f client.mk
 or better, with logging
