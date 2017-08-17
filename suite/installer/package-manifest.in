@@ -803,7 +803,9 @@ bin/libfreebl_32int64_3.so
 #ifndef MOZ_STATIC_JS
 @BINPATH@/mozjs.xqs
 #endif
+#ifndef MOZ_NATIVE_SQLITE
 @BINPATH@/mozsqlt3.xqs
+#endif
 #ifndef MOZ_NATIVE_NSPR
 #ifndef MOZ_FOLD_LIBS
 @BINPATH@/nspr4.xqs
