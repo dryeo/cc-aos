@@ -178,6 +178,11 @@
 ;@BINPATH@/updater.xqs
 ;@BINPATH@/xpcshell.xqs
 @BINPATH@/xul.xqs
+@BINPATH@/thunderbird.xqs
+@BINPATH@/ldap60.xqs
+@BINPATH@/ldif60.xqs
+@BINPATH@/lgpllibs.xqs
+@BINPATH@/prldap60.xqs
 #endif
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
