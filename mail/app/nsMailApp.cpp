@@ -153,7 +153,7 @@ static const nsDynamicFunctionLoad kXULFuncs[] = {
     { nullptr, nullptr }
 };
 
-static int do_main(int argc, char* argv[], nsIFile *xreDirectory)
+static int do_main(int argc, char* argv[], nsIFile *xreDirectory, bool greIsXre)
 {
   NS_LogInit();
 
@@ -216,10 +216,14 @@ static int do_main(int argc, char* argv[], nsIFile *xreDirectory)
     }
 
     nsCOMPtr<nsIFile> greDir;
+  if (greIsXre) {
+    greDir = xreDirectory;
+  } else {
     exeFile->GetParent(getter_AddRefs(greDir));
 #ifdef XP_MACOSX
     greDir->SetNativeLeafName(NS_LITERAL_CSTRING(kOSXResourcesFolder));
 #endif
+    }
     SetStrongPtr(appData.directory, static_cast<nsIFile*>(greDir.get()));
     // xreDirectory already has a refcount from NS_NewLocalFile
     appData.xreDirectory = xreDirectory;
@@ -243,9 +247,11 @@ FileExists(const char *path)
 }
 
 static nsresult
-InitXPCOMGlue(const char *argv0, nsIFile **xreDirectory)
+InitXPCOMGlue(const char *argv0, nsIFile **xreDirectory, bool *greIsXre)
 {
   char exePath[MAXPATHLEN];
+
+  *greIsXre = false;
 
   nsresult rv = mozilla::BinaryPath::Get(argv0, exePath);
   if (NS_FAILED(rv)) {
@@ -254,14 +260,41 @@ InitXPCOMGlue(const char *argv0, nsIFile **xreDirectory)
   }
 
   char *lastSlash = strrchr(exePath, XPCOM_FILE_PATH_SEPARATOR[0]);
-  if (!lastSlash || (size_t(lastSlash - exePath) > MAXPATHLEN - sizeof(XPCOM_DLL) - 1))
+  if (!lastSlash || (size_t(lastSlash - exePath) > MAXPATHLEN - sizeof(XPCOM_DLL)))
     return NS_ERROR_FAILURE;
 
   strcpy(lastSlash + 1, XPCOM_DLL);
 
   if (!FileExists(exePath)) {
-    Output("Could not find the Mozilla runtime.\n");
-    return NS_ERROR_FAILURE;
+#ifdef XP_OS2
+    // If no runtime exists in the launcher's directory, we check if it is
+    // usr/bin (e.g. an RPM installation) and search for the runtime in
+    // usr/lib/Thunderbird-XYZ.
+    bool ok = false;
+    const char UsrBin[] = "\\usr\\bin";
+    const char ThunderbirdXYZ[] = "lib\\Thunderbird-" MOZ_APP_UA_VERSION;
+    size_t len = lastSlash - exePath;
+    if (MAXPATHLEN - len - sizeof(XPCOM_DLL) >= sizeof(ThunderbirdXYZ) - 4 /* lib\\ */) {
+      if (len > sizeof(UsrBin) - 1 /* \0 */ &&
+          !strnicmp(lastSlash - sizeof(UsrBin) + 1, UsrBin, sizeof(UsrBin) - 1)) {
+        memcpy(lastSlash - 3 /* bin */, ThunderbirdXYZ, sizeof(ThunderbirdXYZ) - 1);
+        lastSlash += -3 + sizeof(ThunderbirdXYZ) - 1;
+        *lastSlash = XPCOM_FILE_PATH_SEPARATOR[0];
+        strcpy(lastSlash + 1, XPCOM_DLL);
+        ok = FileExists(exePath);
+        if (ok) {
+          // In this setup, application data is expected to reside in a dir
+          // where XUL.DLL resides rather than in the launcher's dir by default.
+          *greIsXre = true;
+        }
+      }
+    }
+    if (!ok)
+#endif
+    {
+      Output("Could not find the Mozilla runtime (%s).\n", XPCOM_DLL);
+      return NS_ERROR_FAILURE;
+    }
   }
 
 #ifdef XP_OS2
@@ -355,7 +388,8 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-  nsresult rv = InitXPCOMGlue(argv[0], &xreDirectory);
+  bool greIsXre;
+  nsresult rv = InitXPCOMGlue(argv[0], &xreDirectory, &greIsXre);
   if (NS_FAILED(rv)) {
     return 255;
   }
@@ -384,7 +418,7 @@ int main(int argc, char* argv[])
 #endif
   }
 
-  int result = do_main(argc, argv, xreDirectory);
+  int result = do_main(argc, argv, xreDirectory, greIsXre);
 
   NS_LogTerm();
 
