@@ -84,7 +84,9 @@
 @BINPATH@/@MOZ_CHILD_PROCESS_NAME@.app/
 @BINPATH@/@DLL_PREFIX@plugin_child_interpose@DLL_SUFFIX@
 #else
+#ifndef XP_OS2
 @BINPATH@/@MOZ_CHILD_PROCESS_NAME@
+#endif
 #endif
 #if MOZ_PACKAGE_MSVC_DLLS
 @BINPATH@/@MSVC_C_RUNTIME_DLL@
@@ -153,6 +155,7 @@
 #ifdef XP_OS2
 @BINPATH@/MozSounds.cmd
 @BINPATH@/README.OS2
+@BINPATH@/RPM_REQUIREMENTS
 #ifndef MOZ_STATIC_JS
 @BINPATH@/mozjs.xqs
 #endif

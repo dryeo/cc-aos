@@ -89,7 +89,9 @@
 @BINPATH@/@MOZ_CHILD_PROCESS_NAME@.app/
 @BINPATH@/@DLL_PREFIX@plugin_child_interpose@DLL_SUFFIX@
 #else
+#ifndef XP_OS2
 @BINPATH@/@MOZ_CHILD_PROCESS_NAME@
+#endif
 #endif
 ; ANGLE GLES-on-D3D rendering library
 #ifdef MOZ_ANGLE_RENDERER
@@ -800,6 +802,7 @@ bin/libfreebl_32int64_3.so
 #ifdef XP_OS2
 @BINPATH@/MozSounds.cmd
 @BINPATH@/README.OS2
+@BINPATH@/RPM_REQUIREMENTS
 #ifndef MOZ_STATIC_JS
 @BINPATH@/mozjs.xqs
 #endif
