@@ -5,9 +5,9 @@
 
 /* change these 3 lines to match your setup */
 
-srcRoot = 'C:\work\cc45esr\obj-tbird'
+srcRoot = 'Y:\work\cc45-git\obj-tbird'
 srcExe = 'mail\app\thunderbird.exe'
-dst = 'C:\work\cc45esr\obj-tbird\dist\bin'
+dst = 'Y:\work\cc45esr\obj-tbird\dist\bin'
 
 /*****************************************************************************/
 

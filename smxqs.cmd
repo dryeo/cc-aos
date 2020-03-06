@@ -5,11 +5,11 @@
 
 /* change these 3 lines to match your setup */
 
-srcRoot = 'C:\work\cc45esr\obj-sm'
+srcRoot = 'Y:\work\cc45-git\obj-sm'
 srcExe = 'suite\app\seamonkey.exe'
 /* srcExe1 = 'mozilla\ipc\app\plugin-container.exe' */
 /* srcExe2 = 'mozilla\toolkit\mozapps\update\updater\updater.exe' */
-dst = 'C:\work\cc45esr\obj-sm\dist\bin'
+dst = 'Y:\work\cc45esr\obj-sm\dist\bin'
 
 /*****************************************************************************/
 
