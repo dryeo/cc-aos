@@ -25,42 +25,15 @@ void mork_assertion_signal(const char* inMessage)
 #endif /*MORK_WIN*/
 }
 
-#if defined(MORK_OS2)
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <share.h>
-#include <io.h>
-
-FILE* mork_fileopen(const char* name, const char* mode)
-{
-    int access = O_RDWR;
-    int descriptor;
-    int pmode = 0;
-
-    /* Only possible options are wb+ and rb+ */
-    MORK_ASSERT((mode[0] == 'w' || mode[0] == 'r') && (mode[1] == 'b') && (mode[2] == '+'));
-    if (mode[0] == 'w') {
-        access |= (O_TRUNC | O_CREAT);
-        pmode = S_IREAD | S_IWRITE;
-    }
-
-    descriptor = sopen(name, access, SH_DENYNO, pmode);
-    if (descriptor != -1) {
-        return fdopen(descriptor, mode);
-    }
-    return NULL;
-}
-#endif
-
 #ifdef MORK_PROVIDE_STDLIB
 
 MORK_LIB_IMPL(mork_i4)
 mork_memcmp(const void* inOne, const void* inTwo, mork_size inSize)
 {
-  register const mork_u1* t = (const mork_u1*) inTwo;
-  register const mork_u1* s = (const mork_u1*) inOne;
+  const mork_u1* t = (const mork_u1*) inTwo;
+  const mork_u1* s = (const mork_u1*) inOne;
   const mork_u1* end = s + inSize;
-  register mork_i4 delta;
+  mork_i4 delta;
   
   while ( s < end )
   {
@@ -79,9 +52,9 @@ mork_memcmp(const void* inOne, const void* inTwo, mork_size inSize)
 MORK_LIB_IMPL(void)
 mork_memcpy(void* outDst, const void* inSrc, mork_size inSize)
 {
-  register mork_u1* d = (mork_u1*) outDst;
+  mork_u1* d = (mork_u1*) outDst;
   mork_u1* end = d + inSize;
-  register const mork_u1* s = ((const mork_u1*) inSrc);
+  const mork_u1* s = ((const mork_u1*) inSrc);
   
   while ( inSize >= 8 )
   {
@@ -105,8 +78,8 @@ mork_memcpy(void* outDst, const void* inSrc, mork_size inSize)
 MORK_LIB_IMPL(void)
 mork_memmove(void* outDst, const void* inSrc, mork_size inSize)
 {
-  register mork_u1* d = (mork_u1*) outDst;
-  register const mork_u1* s = (const mork_u1*) inSrc;
+  mork_u1* d = (mork_u1*) outDst;
+  const mork_u1* s = (const mork_u1*) inSrc;
   if ( d != s && inSize ) // copy is necessary?
   {
     const mork_u1* srcEnd = s + inSize; // one past last source byte
@@ -155,7 +128,7 @@ mork_memmove(void* outDst, const void* inSrc, mork_size inSize)
 MORK_LIB_IMPL(void)
 mork_memset(void* outDst, int inByte, mork_size inSize)
 {
-  register mork_u1* d = (mork_u1*) outDst;
+  mork_u1* d = (mork_u1*) outDst;
   mork_u1* end = d + inSize;
   while ( d < end )
     *d++ = (mork_u1) inByte;
@@ -165,8 +138,8 @@ MORK_LIB_IMPL(void)
 mork_strcpy(void* outDst, const void* inSrc)
 {
   // back up one first to support preincrement
-  register mork_u1* d = ((mork_u1*) outDst) - 1;
-  register const mork_u1* s = ((const mork_u1*) inSrc) - 1;
+  mork_u1* d = ((mork_u1*) outDst) - 1;
+  const mork_u1* s = ((const mork_u1*) inSrc) - 1;
   while ( ( *++d = *++s ) != 0 )
     /* empty */;
 }
@@ -174,11 +147,11 @@ mork_strcpy(void* outDst, const void* inSrc)
 MORK_LIB_IMPL(mork_i4)
 mork_strcmp(const void* inOne, const void* inTwo)
 {
-  register const mork_u1* t = (const mork_u1*) inTwo;
-  register const mork_u1* s = ((const mork_u1*) inOne);
-  register mork_i4 a;
-  register mork_i4 b;
-  register mork_i4 delta;
+  const mork_u1* t = (const mork_u1*) inTwo;
+  const mork_u1* s = ((const mork_u1*) inOne);
+  mork_i4 a;
+  mork_i4 b;
+  mork_i4 delta;
   
   do
   {
@@ -194,12 +167,12 @@ mork_strcmp(const void* inOne, const void* inTwo)
 MORK_LIB_IMPL(mork_i4)
 mork_strncmp(const void* inOne, const void* inTwo, mork_size inSize)
 {
-  register const mork_u1* t = (const mork_u1*) inTwo;
-  register const mork_u1* s = (const mork_u1*) inOne;
+  const mork_u1* t = (const mork_u1*) inTwo;
+  const mork_u1* s = (const mork_u1*) inOne;
   const mork_u1* end = s + inSize;
-  register mork_i4 delta;
-  register mork_i4 a;
-  register mork_i4 b;
+  mork_i4 delta;
+  mork_i4 a;
+  mork_i4 b;
   
   while ( s < end )
   {
@@ -216,7 +189,7 @@ MORK_LIB_IMPL(mork_size)
 mork_strlen(const void* inString)
 {
   // back up one first to support preincrement
-  register const mork_u1* s = ((const mork_u1*) inString) - 1;
+  const mork_u1* s = ((const mork_u1*) inString) - 1;
   while ( *++s ) // preincrement is cheapest
     /* empty */;
   
