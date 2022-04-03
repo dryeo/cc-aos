@@ -62,7 +62,12 @@ void mork_fileflush(FILE * file);
 #define MORK_FILEFLUSH(file) fflush(file) 
 #endif /*MORK_WIN*/
 
-#define MORK_FILEOPEN(file, how) fopen(file, how) 
+#if defined(MORK_OS2)
+FILE* mork_fileopen(const char* name, const char* mode);
+#define MORK_FILEOPEN(file, how) mork_fileopen(file, how) 
+#else
+#define MORK_FILEOPEN(file, how) fopen(file, how)
+#endif /*MORK_OS2 */
 #define MORK_FILECLOSE(file) fclose(file) 
 #endif /*MORK_WIN*/
 
