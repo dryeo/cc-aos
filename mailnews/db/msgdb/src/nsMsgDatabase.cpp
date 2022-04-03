@@ -37,7 +37,6 @@
 #include "nsCollationCID.h"
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
-#include "nsIMsgPluggableStore.h"
 #include "nsAlgorithm.h"
 #include "nsArrayEnumerator.h"
 #include "nsIMemoryReporter.h"
