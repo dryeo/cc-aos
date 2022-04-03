@@ -7,7 +7,7 @@
 
 srcRoot = 'Y:\work\cc45-git\obj-tbird'
 srcExe = 'mail\app\thunderbird.exe'
-dst = 'Y:\work\cc45esr\obj-tbird\dist\bin'
+dst = 'Y:\work\cc45-git\obj-tbird\dist\bin'
 
 /*****************************************************************************/
 
