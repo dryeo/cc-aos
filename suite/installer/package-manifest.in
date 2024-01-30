@@ -823,6 +823,7 @@ bin/libfreebl_32int64_3.so
 @BINPATH@/nssutil3.xqs
 @BINPATH@/smime3.xqs
 @BINPATH@/softokn3.xqs
+@BINPATH@/ssl3.xqs
 #endif
 ;@BINPATH@/plugin-container.xqs
 ;@BINPATH@/updater.xqs
