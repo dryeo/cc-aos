@@ -107,8 +107,9 @@ COMPARE_LOCALES_PYTHONPATH = $(if $(BUILD_COMPARE_LOCALES),$(BUILD_COMPARE_LOCAL
 merge-%:
 ifdef LOCALE_MERGEDIR
 	$(RM) -rf $(LOCALE_MERGEDIR)/calendar
-	MACOSX_DEPLOYMENT_TARGET= PYTHONPATH=$(COMPARE_LOCALES_PYTHONPATH) \
-	  $(COMPARE_LOCALES) -m $(LOCALE_MERGEDIR) $(topsrcdir)/calendar/locales/l10n.ini $(L10NBASEDIR) $*
+#	MACOSX_DEPLOYMENT_TARGET= PYTHONPATH=$(COMPARE_LOCALES_PYTHONPATH) \
+#	  $(COMPARE_LOCALES) -m $(LOCALE_MERGEDIR) $(topsrcdir)/calendar/locales/l10n.ini $(L10NBASEDIR) $*
+	$(topsrcdir)/mozilla/mach compare-locales --merge-dir $(LOCALE_MERGEDIR) --l10n-ini $(srcdir)/l10n.ini $*
 
 	# This file requires a bugfix with string changes, see bug 1154448
 	[ -f $(L10NBASEDIR)/$*/calendar/chrome/calendar/calendar-extract.properties ] && \
